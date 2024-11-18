@@ -1,0 +1,16 @@
+
+{{#*inline "title"}}Movies Found{{/inline}}
+
+<h2>Results for "{{searchByTitle}}"</h2>
+
+  <ol>
+    {{#each recipes}}
+      <li>
+        <a href="/recipe/{{this.name}}">{{this.name}}<br>
+          <img class="searchResultImage" alt="{{this.name}} Preview Image" src="{{this.name}}">
+        </a>
+      </li>
+    {{/each}}
+  </ol>
+  <a href="/">Go back home</a>
+

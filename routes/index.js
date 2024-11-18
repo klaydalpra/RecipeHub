@@ -6,6 +6,7 @@ import homeRoute from './homepage.js';
 import profileRoute from './profile.js';
 import favoriteRoute from './favorites.js';
 import shoppingRoute from './shoppingList.js';
+import searchRoute from './searchrecipe.js';
 
 const constructorMethod = (app) => {
   app.use('/login', loginRoutes);
@@ -15,6 +16,7 @@ const constructorMethod = (app) => {
   app.use('/profile', profileRoute);
   app.use('/favorites', favoriteRoute);
   app.use('/shopping-list', shoppingRoute);
+  app.use('/searchrecipe', searchRoute);
 
   app.get('/', (req, res) => {
     res.redirect('/home');

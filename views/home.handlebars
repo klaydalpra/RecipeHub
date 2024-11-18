@@ -1,0 +1,11 @@
+
+{{#*inline "title"}}Recipe Hub{{/inline}}
+
+{{!-- Main content for the home page --}}
+<p>Welcome to Recipe Hub!</p>
+
+<form action="/searchrecipe" method="POST">
+  <label for="searchByTitle">Search for a recipe:</label>
+  <input type="text" id="searchByTitle" name="searchByTitle" required placeholder="Enter recipe keyword">
+  <input type="submit" value="Search">
+</form>

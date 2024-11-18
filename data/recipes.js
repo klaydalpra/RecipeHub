@@ -21,4 +21,10 @@ const addRecipe = async (name, ingredients, instructions, dateMade) => {
     return { _id: recipeId, ...newRecipe };
 }
 
-export { addRecipe };
+const getAllRecipes = async () => {
+    const recipesCol = await recipesCollection();
+    const recipes = await recipesCol.find({}).toArray();
+    return recipes;
+}
+
+export { addRecipe, getAllRecipes };
