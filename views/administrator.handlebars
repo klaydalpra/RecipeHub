@@ -1,0 +1,10 @@
+{{!-- Administrator Dashboard --}}
+<div id="adminView">
+    <p id="welcome">
+        Welcome {{user.firstName}} {{user.lastName}}, the time is now: {{time}} and the current date is {{date}}.
+        You get super secret administrator access since you are an admin. Remember, with great power comes great responsibility!
+    </p>
+    <p id="quote">Favorite Quote: {{user.favoriteQuote}}</p>
+    <a id="userLink" href="/user">User Page</a>
+    <a id="signoutLink" href="/signoutuser">Sign out</a>
+</div>

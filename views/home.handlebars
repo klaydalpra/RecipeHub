@@ -2,6 +2,15 @@
 {{#*inline "title"}}Recipe Hub{{/inline}}
 
 {{!-- Main content for the home page --}}
+<nav>
+  {{#if user}}
+    <a href="/profile">Profile</a>
+    <a href="/signout">Sign Out</a>
+  {{else}}
+    <a href="/login">Login</a>
+    <a href="/signupuser">Sign Up</a>
+  {{/if}}
+</nav>
 <p>Welcome to Recipe Hub!</p>
 
 <form action="/searchrecipe" method="POST">

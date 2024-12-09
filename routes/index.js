@@ -7,6 +7,8 @@ import profileRoute from './profile.js';
 import favoriteRoute from './favorites.js';
 import shoppingRoute from './shoppingList.js';
 import searchRoute from './searchrecipe.js';
+import signUpRoute from './signupuser.js';
+import signOutRoute from './signout.js';
 
 const constructorMethod = (app) => {
   app.use('/login', loginRoutes);
@@ -17,6 +19,9 @@ const constructorMethod = (app) => {
   app.use('/favorites', favoriteRoute);
   app.use('/shopping-list', shoppingRoute);
   app.use('/searchrecipe', searchRoute);
+  app.use('/signupuser', signUpRoute);
+  app.use('/signinuser', loginRoutes);
+  app.use('/signout', signOutRoute);
 
   app.get('/', (req, res) => {
     res.redirect('/home');
