@@ -49,6 +49,10 @@ export const signUpUser = async (
         favoriteQuote: favoriteQuote.trim(),
         themePreference: {backgroundColor: themePreference.backgroundColor.toLowerCase(),fontColor: themePreference.fontColor.toLowerCase(),},
         role: role.toLowerCase(),
+        recipeIds: [],
+        reviewIds: [],
+        savedRecipeIds: [],
+        followingUserIds: []
     };
     const insertResult = await usersCol.insertOne(newUser);
     if(!insertResult.acknowledged) {
@@ -58,6 +62,17 @@ export const signUpUser = async (
         registrationCompleted: true
     };
 };
+
+export const getUserById = async(id) => {
+    helperFunctions.checkId(id);
+    const usersCol = await usersCollection();
+    const user = await usersCol.findOne({_id: new ObjectId(id)});
+    if (user === null) throw `Could not find user with id of ${id}`;
+
+    user._id = user._id.toString();
+  
+    return user;
+}
 
 export const closeDbConnection = async () => {
   await closeConnection();
