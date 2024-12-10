@@ -80,7 +80,7 @@ export const saveRecipe = async (recipeId, userId) => {
     helperFunctions.checkId(userId);
     const usersCol = await usersCollection();
     const user = await usersCol.findOne({_id: new ObjectId(userId)});
-    let currentSavedRecipeIds = recipe.savedRecipeIds;
+    let currentSavedRecipeIds = user.savedRecipeIds;
     currentSavedRecipeIds.push(recipeId)
     const newSavedRecipeIds = {
         savedRecipeIds: currentSavedRecipeIds
