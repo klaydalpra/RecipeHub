@@ -9,7 +9,7 @@ router.use(ensureAuthenticated);
 
 
 router.get('/', (req, res) => {
-    res.send('Hello, World! This is the create a recipe page!');
+    res.render('createRecipe');
 });
 
 router.post('/', async (req, res) => {
@@ -21,7 +21,7 @@ router.post('/', async (req, res) => {
         }
 
         const newRecipe = await recipeData.addRecipe(recipeName, ingredients, instructions);
-        res.status(201).json({ message: 'Recipe created successfully!', recipe: newRecipe });
+        res.redirect(`/recipe/${newRecipe._id}`);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }

@@ -1,0 +1,16 @@
+<h1>{{recipe.name}}</h1>
+<h2>Ingredients:</h2>
+<ul>
+  {{#each recipe.ingredients}}
+    <li>{{this}}</li>
+  {{/each}}
+</ul>
+
+<h2>Instructions:</h2>
+<ol>
+  {{#each recipe.instructions}}
+    <li>{{this}}</li>
+  {{/each}}
+</ol>
+
+<a href="/create-recipe">Add Another Recipe</a>

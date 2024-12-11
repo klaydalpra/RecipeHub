@@ -5,7 +5,7 @@ import { usersCollection } from '../config/mongoCollections.js';
 import {closeConnection} from '../config/mongoConnections.js';
 import { recipeData } from './index.js';
 import { userData } from './index.js';
-import { helperFunctions } from '../helpers.js';
+import  helperFunctions from '../helpers.js';
 
 const addReview = async (recipeId, userId, reviewText, rating) => {
     helperFunctions.checkId(recipeId);

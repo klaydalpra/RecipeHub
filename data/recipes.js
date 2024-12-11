@@ -1,8 +1,7 @@
 import {MongoClient, ObjectId} from 'mongodb';
 import { recipesCollection } from '../config/mongoCollections.js';
 import {closeConnection} from '../config/mongoConnections.js';
-import {ObjectId} from 'mongodb';
-import * as helperFunctions from '../helpers.js';
+import helperFunctions from '../helpers.js';
 
 
 const addRecipe = async (name, ingredients, instructions, dateMade) => {
