@@ -3,7 +3,7 @@ import { recipesCollection } from '../config/mongoCollections.js';
 import {closeConnection} from '../config/mongoConnections.js';
 import helperFunctions from '../helpers.js';
 
-
+/*
 const addRecipe = async (name, ingredients, instructions, dateMade) => {
 
     const recipesCol = await recipesCollection();
@@ -23,6 +23,38 @@ const addRecipe = async (name, ingredients, instructions, dateMade) => {
     const recipeId = insertInfo.insertedId;
     return { _id: recipeId, ...newRecipe };
 }
+    */
+   const addRecipe = async (name, ingredients, instructions) => {
+    if (!name || typeof name !== 'string' || name.trim().length === 0) {
+        throw new Error('Recipe name is required.');
+    }
+
+    if (typeof ingredients !== 'object' || Array.isArray(ingredients) || Object.keys(ingredients).length === 0) {
+        throw new Error('Ingredients must be a non-empty object.');
+    }
+
+    if (!Array.isArray(instructions) || instructions.length === 0 || instructions.some((step) => typeof step !== 'string')) {
+        throw new Error('Instructions must be a non-empty array of strings.');
+    }
+
+    const newRecipe = {
+        name: name.trim(),
+        ingredients,
+        instructions,
+        reviewIds: [],
+        savedByUserIds: [],
+    };
+
+    const recipesCol = await recipesCollection();
+    const insertResult = await recipesCol.insertOne(newRecipe);
+
+    if (!insertResult.acknowledged || !insertResult.insertedId) {
+        throw new Error('Failed to add the recipe.');
+    }
+
+    return { _id: insertResult.insertedId, ...newRecipe };
+};
+
 
 const getAllRecipes = async () => {
     const recipesCol = await recipesCollection();

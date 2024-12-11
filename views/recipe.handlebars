@@ -1,8 +1,9 @@
 <h1>{{recipe.name}}</h1>
+
 <h2>Ingredients:</h2>
 <ul>
   {{#each recipe.ingredients}}
-    <li>{{this}}</li>
+    <li>{{@key}}: {{this}}</li>
   {{/each}}
 </ul>
 
