@@ -1,18 +1,22 @@
-import {ObjectId} from 'mongodb';
+import { ObjectId } from 'mongodb';
 
-export function checkId(id) {
-    if (!id) throw "Must provide an ID";
-    if (typeof id !== 'string') throw 'ID must be a string';
-    id = id.trim();
-    if (id.length === 0) throw 'ID must not be empty';
-    if (!ObjectId.isValid(id)) throw 'Error: invalid object ID';
-    return id;
-}
+const helperFunctions = {
+    checkId(id) {
+        if (!id) throw "Must provide an ID";
+        if (typeof id !== 'string') throw 'ID must be a string';
+        id = id.trim();
+        if (id.length === 0) throw 'ID must not be empty';
+        if (!ObjectId.isValid(id)) throw 'Error: invalid object ID';
+        return id;
+    },
 
-export function checkReviewText(text) {
-    return text;
-}
+    checkReviewText(text) {
+        return text;
+    },
 
-export function checkRating(rating) {
-    return rating;
-}
+    checkRating(rating) {
+        return rating;
+    }
+};
+
+export default helperFunctions;

@@ -9,22 +9,46 @@ router.use(ensureAuthenticated);
 
 
 router.get('/', (req, res) => {
-    res.send('Hello, World! This is the create a recipe page!');
+    res.render('createRecipe');
 });
-
 router.post('/', async (req, res) => {
-    try{
-        const { recipeName, ingredients, instructions } = req.body;
-        
-        if(!recipeName || !Array.isArray(ingredients) || !Array.isArray(instructions)) {
-            return res.status(400).json({ error: 'Invalid input: recipeName, ingredients, and instructions are required.' });
+    try {
+        const { recipeName, ingredientName, ingredientAmount, instructions } = req.body;
+
+        // Validate recipeName
+        if (!recipeName || typeof recipeName !== 'string' || recipeName.trim().length === 0) {
+            throw new Error('Recipe name is required.');
         }
 
-        const newRecipe = await recipeData.addRecipe(recipeName, ingredients, instructions);
-        res.status(201).json({ message: 'Recipe created successfully!', recipe: newRecipe });
+        // Validate ingredients
+        if (!Array.isArray(ingredientName) || !Array.isArray(ingredientAmount) || ingredientName.length !== ingredientAmount.length) {
+            throw new Error('Ingredients and their amounts must be provided.');
+        }
+
+        // Construct the ingredients object
+        const ingredients = {};
+        ingredientName.forEach((name, index) => {
+            if (!name.trim() || !ingredientAmount[index].trim()) {
+                throw new Error('Each ingredient and its amount must be non-empty.');
+            }
+            ingredients[name.trim()] = ingredientAmount[index].trim();
+        });
+
+        // Validate instructions
+        if (!Array.isArray(instructions) || instructions.some((step) => typeof step !== 'string' || step.trim().length === 0)) {
+            throw new Error('Instructions must be a non-empty array of strings.');
+        }
+
+        // Add recipe to the database
+        const newRecipe = await recipeData.addRecipe(recipeName.trim(), ingredients, instructions.map((step) => step.trim()));
+
+        // Redirect to the recipe details page
+        res.redirect(`/recipe/${newRecipe._id}`);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        res.status(400).render('createRecipe', { error: error.message });
     }
 });
+
+
 
 export default router;
