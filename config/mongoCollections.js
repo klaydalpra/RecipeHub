@@ -15,4 +15,5 @@ const getCollectionFn = (collection) => {
 
 export const recipesCollection = getCollectionFn('recipe');
 export const usersCollection = getCollectionFn('users');
+export const reviewsCollection = getCollectionFn('reviews');
 

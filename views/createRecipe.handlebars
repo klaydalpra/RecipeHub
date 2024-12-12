@@ -1,0 +1,86 @@
+<div id="userView">
+    <h1>Create a Recipe</h1>
+
+    {{#if error}}
+    <p style="color: red;">{{error}}</p>
+    {{/if}}
+
+    {{#if success}}
+    <p style="color: green;">{{success}}</p>
+    <h3>Recipe Details:</h3>
+    <p><strong>Name:</strong> {{recipe.name}}</p>
+    <p><strong>Ingredients:</strong></p>
+    <ul>
+        {{#each recipe.ingredients}}
+        <li>{{@key}}: {{this}}</li>
+        {{/each}}
+    </ul>
+    <p><strong>Instructions:</strong></p>
+    <ol>
+        {{#each recipe.instructions}}
+        <li>{{this}}</li>
+        {{/each}}
+    </ol>
+    <br>
+    <a href="/create-recipe">Create Another Recipe</a>
+    {{/if}}
+
+    {{#unless success}}
+    <form id="create-recipe-form" method="POST" action="/create-recipe">
+        <!-- Recipe Name -->
+        <label for="recipeName">Recipe Name:</label>
+        <input type="text" id="recipeName" name="recipeName" placeholder="Enter recipe name" required>
+        <br><br>
+
+        <!-- Ingredients Section -->
+        <label for="ingredients">Ingredients:</label>
+        <div id="ingredients-container">
+            <div class="ingredient-item">
+                <input type="text" name="ingredientName[]" placeholder="Enter ingredient name" required>
+                <input type="text" name="ingredientAmount[]" placeholder="Enter amount (e.g., '2 cups')" required>
+            </div>
+        </div>
+        <button type="button" id="add-ingredient-button">Add Another Ingredient</button>
+        <br><br>
+
+        <!-- Instructions Section -->
+        <label for="instructions">Instructions:</label>
+        <div id="instructions-container">
+            <input type="text" name="instructions[]" placeholder="Enter a step" required>
+        </div>
+        <button type="button" id="add-instruction-button">Add Another Step</button>
+        <br><br>
+
+        <!-- Submit Button -->
+        <button type="submit" id="submit-recipe-button">Add Recipe</button>
+    </form>
+    {{/unless}}
+
+    <br>
+    <a id="signoutLink" href="/signoutuser">Sign out</a>
+</div>
+
+<script>
+    // Add another ingredient input pair
+    document.getElementById('add-ingredient-button').addEventListener('click', () => {
+        const container = document.getElementById('ingredients-container');
+        const newDiv = document.createElement('div');
+        newDiv.classList.add('ingredient-item');
+        newDiv.innerHTML = `
+            <input type="text" name="ingredientName[]" placeholder="Enter ingredient name" required>
+            <input type="text" name="ingredientAmount[]" placeholder="Enter amount (e.g., '2 cups')" required>
+        `;
+        container.appendChild(newDiv);
+    });
+
+    // Add another instruction input
+    document.getElementById('add-instruction-button').addEventListener('click', () => {
+        const container = document.getElementById('instructions-container');
+        const newInput = document.createElement('input');
+        newInput.type = 'text';
+        newInput.name = 'instructions[]';
+        newInput.placeholder = 'Enter a step';
+        newInput.required = true;
+        container.appendChild(newInput);
+    });
+</script>

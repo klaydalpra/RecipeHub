@@ -1,9 +1,10 @@
 import { Router } from 'express';
+import { recipeData } from '../data/index.js';
 const router = Router();
 
-router.get('/:recipeId', (req, res) => {
-    const recipeId = req.params.recipeId;
-    res.send(`Hello, World! This is the Recipe Page for Recipe ID: ${recipeId}`);
+router.get('/:recipeId', async(req, res) => {
+    const recipe = await recipeData.getRecipeById(req.params.recipeId);
+    res.render('recipe', { recipe });
 });
 
 export default router;

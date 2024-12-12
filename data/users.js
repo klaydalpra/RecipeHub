@@ -2,6 +2,7 @@ import { MongoClient, ObjectId } from 'mongodb';
 import { usersCollection } from '../config/mongoCollections.js';
 import { closeConnection } from '../config/mongoConnections.js';
 import bcrypt from 'bcrypt';
+import { recipeData } from './index.js';
 export const signUpUser = async (
   firstName,
   lastName,
@@ -49,6 +50,10 @@ export const signUpUser = async (
         favoriteQuote: favoriteQuote.trim(),
         themePreference: {backgroundColor: themePreference.backgroundColor.toLowerCase(),fontColor: themePreference.fontColor.toLowerCase(),},
         role: role.toLowerCase(),
+        recipeIds: [],
+        reviewIds: [],
+        savedRecipeIds: [],
+        followingUserIds: []
     };
     const insertResult = await usersCol.insertOne(newUser);
     if(!insertResult.acknowledged) {
@@ -58,6 +63,40 @@ export const signUpUser = async (
         registrationCompleted: true
     };
 };
+
+export const getUserById = async(id) => {
+    helperFunctions.checkId(id);
+    const usersCol = await usersCollection();
+    const user = await usersCol.findOne({_id: new ObjectId(id)});
+    if (user === null) throw `Could not find user with id of ${id}`;
+
+    user._id = user._id.toString();
+  
+    return user;
+}
+
+export const saveRecipe = async (recipeId, userId) => {
+    helperFunctions.checkId(recipeId);
+    helperFunctions.checkId(userId);
+    const usersCol = await usersCollection();
+    const user = await usersCol.findOne({_id: new ObjectId(userId)});
+    let currentSavedRecipeIds = recipe.savedRecipeIds;
+    currentSavedRecipeIds.push(recipeId)
+    const newSavedRecipeIds = {
+        savedRecipeIds: currentSavedRecipeIds
+    }
+    const updatedUser = await usersCol.updateOne(
+        {_id: new ObjectId(userId)},
+        {$set: newSavedRecipeIds},
+        {returnDocument: 'after'}
+    );
+
+    if (!updatedUser) throw `Could not add comment to review with id of ${userId}`;
+
+    recipeData.recipeSaved(recipeId, userId);
+
+    return updatedUser;
+}
 
 export const closeDbConnection = async () => {
   await closeConnection();
