@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { recipeData } from '../data/index.js';
 import { reviewData } from '../data/index.js';
 import helperFunctions from '../helpers.js';
+import { ensureAuthenticated } from '../middleware/authMiddleware.js';
 const router = Router();
 
 router.get('/:recipeId', async(req, res) => {
@@ -20,31 +21,33 @@ router.get('/:recipeId', async(req, res) => {
     }
     
 });
-
-router.post('/:recipeId/review', async(req, res) => {
+router.post('/:recipeId/review',ensureAuthenticated, async (req, res) => {
     const { reviewText, rating } = req.body;
-    let user = req.session.user;
+    const user = req.session.user;
     let recipeId = req.params.recipeId;
+
     if (!reviewText || !rating) {
-        return res
-          .status(400)
-          .redirect(`/recipe/${recipeId}`, {error: 'There are missing fields in the request body'})
-      }
+        return res.redirect(`/recipe/${recipeId}?error=Missing fields`);
+    }
+
     try {
         recipeId = helperFunctions.checkId(recipeId);
         user.id = helperFunctions.checkId(user.id);
         helperFunctions.checkText(reviewText);
         helperFunctions.checkRating(rating);
-    } catch(e) {
-        return res.status(400).redirect(`/recipe/${recipeId}`, {error: e})
+    } catch (e) {
+        return res.redirect(`/recipe/${recipeId}?error=${encodeURIComponent(e.message)}`);
     }
+
     try {
-        const review = await reviewData.addReview(recipeId, user.id, user.userId, reviewText, rating);
-        res.redirect(`/recipe/${recipeId}`)
-    } catch(e) {
-        return res.status(500).redirect(`/recipe/${recipeId}`, {error: e})
+        await reviewData.addReview(recipeId, user.id, user.userId, reviewText, rating);
+        return res.redirect(`/recipe/${recipeId}`);
+    } catch (e) {
+        return res.redirect(`/recipe/${recipeId}?error=${encodeURIComponent(e.message)}`);
     }
 });
+
+
 
 router.post('/:recipeId/review/:reviewId/comment', async(req, res) => {
     let comment = req.body.commentText;
