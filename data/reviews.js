@@ -90,21 +90,21 @@ const getAllUserReviews = async (userId) => {
     return reviews;
 }
 
-const addReviewComment = async (comment, reviewId) => {
+const addReviewComment = async (comment, reviewId, userId) => {
     reviewId = helperFunctions.checkId(reviewId);
     helperFunctions.checkText(comment);
     const reviewsCol = await reviewsCollection();
     const review = await reviewsCol.findOne({_id: new ObjectId(reviewId)});
     if (review === null) throw `Could not find review with id of ${id}`;
     let currentComments = review.comments;
-    currentComments.push(comment);
-    const updatedInfo = {
+    currentComments.push({comment: comment, author: userId});
+    const updatedComments = {
         comments: currentComments
     };
 
     const updatedReview = await reviewsCol.updateOne(
         {_id: new ObjectId(reviewId)},
-        {$set: updatedReview},
+        {$set: updatedComments},
         {returnDocument: 'after'}
     );
 
