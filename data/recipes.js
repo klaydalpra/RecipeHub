@@ -89,7 +89,7 @@ const recipeSaved = async (recipeId, userId) => {
         {returnDocument: 'after'}
     );
 
-    if (!updatedRecipe) throw `Could not add comment to review with id of ${recipeId}`;
+    if (!updatedRecipe) throw `Could not save recipe ${recipeId} for user ${userId}`;
 
     return updatedRecipe;
 }
