@@ -3,6 +3,8 @@ import { usersCollection } from '../config/mongoCollections.js';
 import { closeConnection } from '../config/mongoConnections.js';
 import bcrypt from 'bcrypt';
 import { recipeData } from './index.js';
+import helperFunctions from '../helpers.js';
+
 export const signUpUser = async (
   firstName,
   lastName,
@@ -64,6 +66,59 @@ export const signUpUser = async (
     };
 };
 
+export const signInUser = async (userId, password) => {
+    // userId = helperFunctions.checkUserId(userId);
+    // helperFunctions.checkPassword(password);
+
+    const usersCol = await usersCollection();
+    const user = await usersCol.findOne({userId: userId});
+    if (user === null) {
+        throw "Either the userId or password is invalid";
+    } else {
+        let comparePasswords = false;
+
+        try {
+            comparePasswords = await bcrypt.compare(password, user.password);
+        } catch (e) {
+            throw `Error signing in: ${e}`
+        }
+        try {
+            if (comparePasswords) {
+                const {
+                    _id,
+                    firstName,
+                    lastName,
+                    userId,
+                    hashedPassword,
+                    favoriteQuote,
+                    themePreference,
+                    role,
+                    recipeIds,
+                    reviewIds,
+                    savedRecipeIds,
+                    followingUserIds
+                } = user;
+                return {
+                    id: _id.toString(),
+                    firstName: firstName,
+                    lastName: lastName,
+                    userId: userId,
+                    password: hashedPassword,
+                    favoriteQuote: favoriteQuote,
+                    themePreference: themePreference,
+                    role: role,
+                    recipeIds: recipeIds,
+                    reviewIds: reviewIds,
+                    savedRecipeIds: savedRecipeIds,
+                    followingUserIds: followingUserIds
+                };
+            }
+        } catch (e) {
+            throw "Either the userId or password is invalid";
+        }
+    }
+};
+
 export const getUserById = async(id) => {
     helperFunctions.checkId(id);
     const usersCol = await usersCollection();
@@ -91,7 +146,7 @@ export const saveRecipe = async (recipeId, userId) => {
         {returnDocument: 'after'}
     );
 
-    if (!updatedUser) throw `Could not add comment to review with id of ${userId}`;
+    if (!updatedUser) throw `Could not save recipe ${recipeId} for user ${userId}`;
 
     recipeData.recipeSaved(recipeId, userId);
 
