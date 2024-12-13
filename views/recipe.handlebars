@@ -1,4 +1,5 @@
-<h1>{{recipe.name}}</h1>
+<h1>{{ recipe.name }}</h1>
+<p>{{ recipe._id }}</p>
 
 <h2>Ingredients:</h2>
 <ul>
@@ -13,5 +14,43 @@
     <li>{{this}}</li>
   {{/each}}
 </ol>
+
+<form id="add-review-form" method="POST" action="/recipe/{{recipe._id}}/review">
+  <!-- Review Text -->
+  <label for="reviewText">Review:</label>
+  <input type="text" id="reviewText" name="reviewText" placeholder="Leave a review..." required>
+  <br><br>
+
+  <!-- Rating -->
+  <label for="rating">Rating:</label>
+  <select id="rating" name="rating">
+    <option value="">Please choose a rating</option>
+    <option value="1">1</option>
+    <option value="2">2</option>
+    <option value="3">3</option>
+    <option value="4">4</option>
+    <option value="5">5</option>
+    <option value="6">6</option>
+    <option value="7">7</option>
+    <option value="8">8</option>
+    <option value="9">9</option>
+    <option value="10">10</option>
+  </select>
+  <br><br>
+
+  <!-- Submit Button -->
+  <button type="submit" id="submit-review-button">Add Review</button>
+</form>
+
+{{#if reviews}}
+<h2>Reviews:</h2>
+<ul>
+  {{#each reviews}}
+    <li>{{this.reviewText}}</li>
+    <li>Rating: {{this.rating}}</li>
+    <li><a href="/profile/{{this.reviewerId}}">{{this.userId}}</a></li>
+  {{/each}}
+</ul>
+{{/if}}
 
 <a href="/create-recipe">Add Another Recipe</a>
