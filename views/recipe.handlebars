@@ -1,14 +1,14 @@
 <h1>{{ recipe.name }}</h1>
 <p>{{ recipe._id }}</p>
 
-<h2>Ingredients:</h2>
+<h2>Ingredients</h2>
 <ul>
   {{#each recipe.ingredients}}
-    <li>{{@key}}: {{this}}</li>
+    <li>{{this}} {{@key}}</li>
   {{/each}}
 </ul>
 
-<h2>Instructions:</h2>
+<h2>Instructions</h2>
 <ol>
   {{#each recipe.instructions}}
     <li>{{this}}</li>
@@ -43,14 +43,31 @@
 </form>
 
 {{#if reviews}}
-<h2>Reviews:</h2>
-<ul>
+  <h2>Reviews</h2>
   {{#each reviews}}
-    <li>{{this.reviewText}}</li>
-    <li>Rating: {{this.rating}}</li>
-    <li><a href="/profile/{{this.reviewerId}}">{{this.userId}}</a></li>
+    <ul>
+        <li>{{this.reviewText}}</li>
+        <li>Rating: {{this.rating}}</li>
+        <li><a href="/profile/{{this.reviewerId}}">{{this.userId}}</a></li>
+    </ul>
+    {{#if this.comments}}
+      <p>Comments</p>
+      {{#each this.comments}}
+        <ul>
+          <li>{{this.author}}</li>
+          <li>{{this.comment}}</li>
+        </ul>
+      {{/each}}
+    {{/if}}
+    <form id="add-comment-form" method="POST" action="/recipe/{{this.recipeId}}/review/{{this._id}}/comment">
+      <!-- Review Text -->
+      <label for="commentText">Comment:</label>
+      <input type="text" id="commentText" name="commentText" placeholder="Leave a comment..." required>
+      <br><br>
+      <!-- Submit Button -->
+      <button type="submit" id="submit-comment-button">Add Comment</button>
+    </form>
   {{/each}}
-</ul>
 {{/if}}
 
 <a href="/create-recipe">Add Another Recipe</a>
