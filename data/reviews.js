@@ -7,10 +7,11 @@ import { recipeData } from './index.js';
 import { userData } from './index.js';
 import  helperFunctions from '../helpers.js';
 
-const addReview = async (recipeId, userId, reviewText, rating) => {
-    helperFunctions.checkId(recipeId);
-    helperFunctions.checkId(userId);
-    helperFunctions.checkReviewText(reviewText);
+//test
+const addReview = async (recipeId, reviewerId, userId, reviewText, rating) => {
+    recipeId = helperFunctions.checkId(recipeId);
+    reviewerId = helperFunctions.checkId(reviewerId);
+    helperFunctions.checkText(reviewText);
     helperFunctions.checkRating(rating);
 
     const reviewsCol = await reviewsCollection();
@@ -18,6 +19,7 @@ const addReview = async (recipeId, userId, reviewText, rating) => {
     const newReview = {
         _id: new ObjectId(),
         recipeId: recipeId,
+        reviewerId: reviewerId,
         userId: userId,
         reviewText: reviewText,
         rating: rating,
@@ -30,30 +32,30 @@ const addReview = async (recipeId, userId, reviewText, rating) => {
     const newId = insertInfo.insertedId;
     const review = await reviewsCol.findOne({_id: newId});
 
-    const recipesCollection = await recipesCollection();
+    const recipesCol = await recipesCollection();
     const recipe = await recipeData.getRecipeById(recipeId)
     let currentRecipeReviewIds = recipe.reviewIds;
-    currentRecipeReviewIds.push(newId);
+    currentRecipeReviewIds.push(newId.toString());
     const updatedRecipe = {
         reviewIds: currentRecipeReviewIds
     };
 
-    await recipesCollection.updateOne(
+    await recipesCol.updateOne(
         {_id: new ObjectId(recipeId)},
         {$set: updatedRecipe},
         {returnDocument: 'after'}
     );
 
     const usersCol = await usersCollection();
-    const user = await userData.getUserById(userId)
+    const user = await userData.getUserById(reviewerId)
     let currentUserReviewIds = user.reviewIds;
-    currentUserReviewIds.push(newId);
+    currentUserReviewIds.push(newId.toString());
     const updatedUser = {
         reviewIds: currentUserReviewIds
     };
 
     await usersCol.updateOne(
-        {_id: new ObjectId(userId)},
+        {_id: new ObjectId(reviewerId)},
         {$set: updatedUser},
         {returnDocument: 'after'}
     );
@@ -89,4 +91,27 @@ const getAllUserReviews = async (userId) => {
     return reviews;
 }
 
-export { addReview, getAllRecipeReviews, getAllUserReviews };
+const addReviewComment = async (comment, reviewId, userId) => {
+    reviewId = helperFunctions.checkId(reviewId);
+    helperFunctions.checkText(comment);
+    const reviewsCol = await reviewsCollection();
+    const review = await reviewsCol.findOne({_id: new ObjectId(reviewId)});
+    if (review === null) throw `Could not find review with id of ${id}`;
+    let currentComments = review.comments;
+    currentComments.push({comment: comment, author: userId});
+    const updatedComments = {
+        comments: currentComments
+    };
+
+    const updatedReview = await reviewsCol.updateOne(
+        {_id: new ObjectId(reviewId)},
+        {$set: updatedComments},
+        {returnDocument: 'after'}
+    );
+
+    if (!updatedReview) throw `Could not update team with id of ${reviewId}`;
+    
+    return updatedReview;
+}
+
+export { addReview, getAllRecipeReviews, getAllUserReviews, addReviewComment };

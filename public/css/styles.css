@@ -1,0 +1,120 @@
+/* General styles */
+body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 20px;
+}
+
+h2 {
+  margin-bottom: 10px;
+}
+
+/* Shopping list styles */
+.shoppingListDisplay-form {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+#shoppingList {
+  border: 1px solid #facccc;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+#shoppingList table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#shoppingList th,
+#shoppingList td {
+  padding: 5px;
+  border: 1px solid #facccc;;
+  text-align: left;
+}
+
+#shoppingList th {
+  background-color: #e0d2d2;
+}
+
+/* Delete button styles */
+#shoppingList button[name="deleteButton"] {
+  background-color: #cc0000; 
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#shoppingList button[name="deleteButton"]:hover {
+  background-color: #6e0000;
+}
+
+/* Measurement conversion styles */
+.measurement-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.measurementConversion {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.measurementConversion label {
+  display: inline-block;
+  margin-right: 10px;
+  font-size: 75%; 
+}
+
+.measurementConversion input[type="text"]::placeholder {
+  font-size: 80%; 
+  color: #999; 
+}
+
+.measurementConversion select,
+.measurementConversion input[type="text"] {
+  padding: 5px;
+  border: 1px solid #facccc;
+  border-radius: 3px;
+  font-size: 75%; 
+}
+
+.measurementConversion button {
+  background-color: #63c266;
+  color: white;
+  padding: 7px 17px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.measurementConversion button:hover {
+  background-color: #3a8d3c;
+}
+
+.measurementConversion .conversionResults {
+  flex-grow: 1;
+  padding: 5px;
+  border: 1px solid #facccc;
+  border-radius: 3px;
+  font-size: 75%;
+}
+#conversionResults {
+    font-size: 85%; 
+}
+
+/* Navigation links */
+a {
+  color: #007bff;
+  text-decoration: none;
+  margin-right: 10px;
+}
+
+a:hover {
+  color: #0056b3;
+}
