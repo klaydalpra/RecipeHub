@@ -1,12 +1,14 @@
 import { Router } from 'express';
 import { recipeData } from '../data/index.js';
 import { reviewData } from '../data/index.js';
+import { userData } from '../data/index.js';
 import helperFunctions from '../helpers.js';
 import { ensureAuthenticated } from '../middleware/authMiddleware.js';
 const router = Router();
+
 router.get('/:recipeId', async (req, res) => {
     let recipeId = req.params.recipeId;
-
+    const user = req.session.user;
     try {
         recipeId = helperFunctions.checkId(recipeId);
     } catch (e) {
@@ -17,12 +19,36 @@ router.get('/:recipeId', async (req, res) => {
         const recipe = await recipeData.getRecipeById(recipeId);
         const reviews = await reviewData.getAllRecipeReviews(recipeId);
 
-        res.render('recipe', { recipe, reviews });
+        res.render('recipe', { recipe, reviews, user });
     } catch (e) {
         console.error(`Error fetching recipe or reviews: ${e.message}`);
         return res.status(404).render('error.handlebars', {message: e});
     }
 });
+
+router.post('/:recipeId/save', ensureAuthenticated, async (req, res) => {
+    const user = req.session.user;
+    let recipeId = req.params.recipeId;
+
+    if (!user) {
+        return res.status(403).render('error.handlebars', {message: "Must be logged in to save recipes", recipeId})
+    }
+
+    try {
+        recipeId = helperFunctions.checkId(recipeId);
+        user.id = helperFunctions.checkId(user.id);
+    } catch (e) {
+        return res.status(400).render('error.handlebars', {message: e, recipeId});
+    }
+
+    try {
+        await userData.saveRecipe(recipeId, user.id);
+        return res.redirect(`/recipe/${recipeId}`);
+    } catch (e) {
+        return res.status(500).render('error.handlebars', {message: e, recipeId});
+    }
+});
+
 router.post('/:recipeId/review',ensureAuthenticated, async (req, res) => {
     const { reviewText, rating } = req.body;
     const user = req.session.user;
@@ -44,8 +70,6 @@ router.post('/:recipeId/review',ensureAuthenticated, async (req, res) => {
         return res.status(500).render('error.handlebars', {message: e});
     }
 });
-
-
 
 router.post('/:recipeId/review/:reviewId/comment', async(req, res) => {
     let comment = req.body.commentText;

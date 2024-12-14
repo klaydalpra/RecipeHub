@@ -13,6 +13,11 @@
       <li>{{this}}</li>
     {{/each}}
   </ol>
+  {{#if user}}
+  <form id="save-review-form" method="POST" action="/recipe/{{recipe._id}}/save" name="save-review-form" type="button">
+    <button class="add-comment-button" name="add-comment-button" type="submit">Save Recipe</button>
+  </form>
+  {{/if}}
 </div>
 
 <div class="review_container">

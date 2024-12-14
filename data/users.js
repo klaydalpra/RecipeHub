@@ -108,7 +108,8 @@ export const saveRecipe = async (recipeId, userId) => {
         throw new Error(`User with ID: ${userId} does not exist.`);
     }
 
-    const currentSavedRecipeIds = Array.isArray(user.savedRecipeIds) ? user.savedRecipeIds : [];
+    let currentSavedRecipeIds = Array.isArray(user.savedRecipeIds) ? user.savedRecipeIds : [];
+    if (currentSavedRecipeIds.includes(recipeId)) throw new Error('This recipe has already been saved');
     currentSavedRecipeIds.push(recipeId);
 
     const updatedUser = await usersCol.updateOne(

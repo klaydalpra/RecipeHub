@@ -78,7 +78,8 @@ const recipeSaved = async (recipeId, userId) => {
     helperFunctions.checkId(userId);
     const recipesCol = await recipesCollection();
     const recipe = await recipesCol.findOne({_id: new ObjectId(recipeId)});
-    let currentSavedByUserIds = recipe.savedByUserIds;
+    let currentSavedByUserIds = Array.isArray(recipe.savedByUserIds) ? recipe.savedByUserIds : [];
+    if (currentSavedByUserIds.includes(userId)) throw new Error('This recipe has already been saved');
     currentSavedByUserIds.push(userId)
     const newSavedByUserIds = {
         savedByUserIds: currentSavedByUserIds

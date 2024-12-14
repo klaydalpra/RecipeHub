@@ -4,3 +4,6 @@
   <p class="{{#if isNotFound}}recipe-not-found{{else}}error{{/if}}">{{errorMessage}}</p>
   <p>{{message}}</p>
   <a href="/">Go back home</a>
+  {{#if recipeId}}
+    <a href="/recipe/{{recipeId}}">Go back to recipe</a>
+  {{/if}}
