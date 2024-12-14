@@ -1,78 +1,87 @@
 import { MongoClient, ObjectId } from 'mongodb';
-import { usersCollection } from '../config/mongoCollections.js';
-import { recipesCollection } from '../config/mongoCollections.js';
-import * as hF from '../helpers.js';
-
+import { usersCollection, recipesCollection } from '../config/mongoCollections.js';
+import helperFunctions from '../helpers.js';
 
 export const addShoppingListItem = async (userId, recipeId) => {
-    userId = hF.checkIsStr(userId);
-    recipeId = hF.checkIsStr(recipeId);
-    if (!ObjectId.isValid(recipeId)) throw 'invalid id object for team';
+    userId = helperFunctions.checkId(userId);
+    recipeId = helperFunctions.checkId(recipeId);
+
     const usersCol = await usersCollection();
     const recipesCol = await recipesCollection();
-    let recipe = await recipesCol.findOne({ recipeId: new ObjectId(recipeId) }); // check if recipe exists
-    if (recipe === "null" || typeof recipe === 'undefined') throw "No recipe found with indicated ID";
-    let user = await usersCol.findOne({ userId: userId }); // check if user exists
-    if (user === null) throw 'No user with indicated id';
-    let updatedShoppingList = [];
-    if (user.shoppingList === "null"                // check if user has a shopping list already
-        || typeof user.shoppingList === 'undefined'
-        || user.shoppingList.length === 0) {
-        updatedShoppingList.push(recipeId);
-    }
-    else { // if shopping list exists, add requested recipeId to existing shopping list in mongoDB
-        updatedShoppingList = Object.values(user.shoppingList);
 
-        if (updatedShoppingList.includes(recipeId)) return;
-        updatedShoppingList.push(recipeId);
+    const recipe = await recipesCol.findOne({ _id: new ObjectId(recipeId) });
+    if (!recipe) throw new Error('No recipe found with the indicated ID.');
+
+    const user = await usersCol.findOne({ _id: new ObjectId(userId) });
+    if (!user) throw new Error('No user found with the indicated ID.');
+
+    const currentShoppingList = Array.isArray(user.shoppingList) ? user.shoppingList : [];
+
+    if (currentShoppingList.includes(recipeId)) return;
+
+    currentShoppingList.push(recipeId);
+
+    const updateInfo = await usersCol.updateOne(
+        { _id: new ObjectId(userId) },
+        { $set: { shoppingList: currentShoppingList } }
+    );
+
+    if (updateInfo.modifiedCount === 0) {
+        throw new Error('Failed to add recipe to the shopping list.');
     }
-    await usersCol.findOneAndUpdate(
-        { userId: userId },
-        { $set: { shoppingList: updatedShoppingList } }, { returnDocument: 'after' });
 };
 
 export const removeShoppingListItem = async (userId, recipeId) => {
-    userId = hF.checkIsStr(userId);
-    recipeId = hF.checkIsStr(recipeId);
-    if (!ObjectId.isValid(recipeId)) throw 'invalid id object for recipe';
-    let usersCol = await usersCollection();
-    let user = await usersCol.findOne({ userId: userId }); // check if user exists
-    if (user === null) throw 'No user with indicated id';
-    
-    let updatedShoppingList = user.shoppingList;
-    let newList = [];
-    for (let i = 0; i < updatedShoppingList.length; i++){
-        if (recipeId !== updatedShoppingList[i]){
-            newList.push(updatedShoppingList[i]);
-        } else{
-            console.log('deleting recipe');
+    userId = helperFunctions.checkId(userId);
+    recipeId = helperFunctions.checkId(recipeId);
+
+    const usersCol = await usersCollection();
+
+    const user = await usersCol.findOne({ _id: new ObjectId(userId) });
+    if (!user) throw new Error('No user found with the indicated ID.');
+
+    const currentShoppingList = Array.isArray(user.shoppingList) ? user.shoppingList : [];
+
+    const updatedShoppingList = currentShoppingList.filter((id) => id !== recipeId);
+
+    const updateInfo = await usersCol.updateOne(
+        { _id: new ObjectId(userId) },
+        { $set: { shoppingList: updatedShoppingList } }
+    );
+
+    if (updateInfo.modifiedCount === 0) {
+        throw new Error('Failed to remove recipe from the shopping list.');
+    }
+};
+
+export const getShoppingList = async (userId) => {
+    userId = helperFunctions.checkId(userId);
+
+    const usersCol = await usersCollection();
+    const recipesCol = await recipesCollection();
+
+    const user = await usersCol.findOne({ _id: new ObjectId(userId) });
+    if (!user) throw new Error('No user found with the indicated ID.');
+
+    const shoppingList = Array.isArray(user.shoppingList) ? user.shoppingList : [];
+
+    const detailedShoppingList = [];
+
+    for (let recipeId of shoppingList) {
+        if (!ObjectId.isValid(recipeId)) {
+            console.warn(`Skipping invalid recipe ID: ${recipeId}`);
+            continue;
+        }
+
+        const recipe = await recipesCol.findOne({ _id: new ObjectId(recipeId) });
+        if (recipe) {
+            detailedShoppingList.push({
+                _id: recipe._id.toString(),
+                name: recipe.name,
+                ingredients: recipe.ingredients,
+            });
         }
     }
-        await usersCol.findOneAndUpdate(
-            { userId: userId },
-            { $set: { shoppingList: newList } }, { returnDocument: 'after' });
-    
+
+    return detailedShoppingList;
 };
-  
-    export const getShoppingList = async (userId) => {
-        userId = hF.checkIsStr(userId);
-        let iList = {};
-        let usersCol = await usersCollection();
-        let user = await usersCol.findOne({ userId: userId }); // check if user exists
-        if (user === null) throw 'No user with indicated id';
-        if (user.shoppingList === null){
-            return user.shoppingList = [];
-        }
-        for (let i=0; i<user.shoppingList.length; i++){
-            let x = user.shoppingList[i];
-            if (!ObjectId.isValid(x)) throw 'invalid id object id for recipe';
-            let recipiesCol = await recipesCollection();
-            let recipe = await recipiesCol.findOne({ _id: new ObjectId(x)});
-            iList[recipe._id] = {};
-            iList[recipe._id].ingredients = recipe.ingredients;
-            iList[recipe._id].recipeId = x;
-            iList[recipe._id].name = recipe.name;
-        }
-        return iList;
-    };
-    
