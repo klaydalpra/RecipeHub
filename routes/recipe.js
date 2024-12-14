@@ -20,7 +20,7 @@ router.get('/:recipeId', async (req, res) => {
         res.render('recipe', { recipe, reviews });
     } catch (e) {
         console.error(`Error fetching recipe or reviews: ${e.message}`);
-        return res.status(404).redirect('/home');
+        return res.status(404).render('error.handlebars', {message: e});
     }
 });
 router.post('/:recipeId/review',ensureAuthenticated, async (req, res) => {
@@ -28,24 +28,20 @@ router.post('/:recipeId/review',ensureAuthenticated, async (req, res) => {
     const user = req.session.user;
     let recipeId = req.params.recipeId;
 
-    if (!reviewText || !rating) {
-        return res.redirect(`/recipe/${recipeId}?error=Missing fields`);
-    }
-
     try {
         recipeId = helperFunctions.checkId(recipeId);
         user.id = helperFunctions.checkId(user.id);
         helperFunctions.checkText(reviewText);
         helperFunctions.checkRating(rating);
     } catch (e) {
-        return res.redirect(`/recipe/${recipeId}?error=${encodeURIComponent(e.message)}`);
+        return res.status(400).render('error.handlebars', {message: e});
     }
 
     try {
         await reviewData.addReview(recipeId, user.id, user.userId, reviewText, rating);
         return res.redirect(`/recipe/${recipeId}`);
     } catch (e) {
-        return res.redirect(`/recipe/${recipeId}?error=${encodeURIComponent(e.message)}`);
+        return res.status(500).render('error.handlebars', {message: e});
     }
 });
 
@@ -61,13 +57,13 @@ router.post('/:recipeId/review/:reviewId/comment', async(req, res) => {
         recipeId = helperFunctions.checkId(recipeId);
         helperFunctions.checkText(comment);
     } catch(e) {
-        return res.redirect(`/recipe/${recipeId}?error=${encodeURIComponent(e.message)}`);
+        return res.status(400).render('error.handlebars', {message: e});
     }
     try {
         const reviewComment = await reviewData.addReviewComment(comment, reviewId, user.userId);
         res.redirect(`/recipe/${recipeId}`)
     } catch(e) {
-        return res.redirect(`/recipe/${recipeId}?error=${encodeURIComponent(e.message)}`);
+        return res.status(500).render('error.handlebars', {message: e});
     }
 });
 

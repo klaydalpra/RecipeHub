@@ -188,6 +188,20 @@ button[type="submit"]:hover {
     background-color: #0056b3;
 }
 
+button[type="button"], button[type="reset"] {
+  background-color: #f1f1f1;
+  color: #000000;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button[type="button"]:hover, button[type="reset"]:hover {
+  background-color: #b1b1b1;
+}
+
 /* Review List */
 .review_list {
     list-style-type: none;

@@ -16,7 +16,7 @@
 </div>
 
 <div class="review_container">
-  <form id="add-review-form" method="POST" action="/recipe/{{recipe._id}}/review">
+  <form id="add-review-form" name="add-review-form" method="POST" action="/recipe/{{recipe._id}}/review">
     <div class="review_text_container">
       <!-- Review Text -->
       <label for="reviewText">Review:</label>
@@ -44,7 +44,7 @@
     <br><br>
 
     <!-- Submit Button -->
-    <button type="submit" id="submit-review-button">Add Review</button>
+    <button type="submit" id="submit-review-button" name="submit-review-button">Add Review</button>
   </form>
 </div>
 
@@ -69,13 +69,15 @@
           {{/each}}
         {{/if}}
         <div class="comment_container">
-          <form id="add-comment-form" method="POST" action="/recipe/{{this.recipeId}}/review/{{this._id}}/comment">
+          <button class="add-comment-button" name="add-comment-button" type="button">Comment</button>
+          <form class="add-comment-form" name="add-comment-form" method="POST" action="/recipe/{{this.recipeId}}/review/{{this._id}}/comment" hidden>
             <!-- Review Text -->
             <label for="commentText"></label>
-            <input type="text" id="commentText" name="commentText" placeholder="Leave a comment..." required>
+            <input type="text" class="commentText" name="commentText" placeholder="Leave a comment..." required>
             <br><br>
             <!-- Submit Button -->
-            <button type="submit" id="submit-comment-button">Add Comment</button>
+            <button type="submit" class="submit-comment-button" name="submit-comment-button">Add Comment</button>
+            <button class="cancel-comment-button" name="cancel-comment-button" type="reset">Cancel</button>
           </form>
         </div>
       </div>
