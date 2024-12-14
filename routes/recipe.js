@@ -4,22 +4,24 @@ import { reviewData } from '../data/index.js';
 import helperFunctions from '../helpers.js';
 import { ensureAuthenticated } from '../middleware/authMiddleware.js';
 const router = Router();
-
-router.get('/:recipeId', async(req, res) => {
+router.get('/:recipeId', async (req, res) => {
     let recipeId = req.params.recipeId;
+
     try {
         recipeId = helperFunctions.checkId(recipeId);
-    } catch(e) {
-        return res.status(400).redirect(`/home`, {error: e})
+    } catch (e) {
+        return res.status(400).redirect('/home');
     }
+
     try {
         const recipe = await recipeData.getRecipeById(recipeId);
         const reviews = await reviewData.getAllRecipeReviews(recipeId);
-        res.render('recipe', { recipe: recipe, reviews: reviews });
-    } catch(e) {
-        return res.status(404).redirect(`/home`, {error: e})
+
+        res.render('recipe', { recipe, reviews });
+    } catch (e) {
+        console.error(`Error fetching recipe or reviews: ${e.message}`);
+        return res.status(404).redirect('/home');
     }
-    
 });
 router.post('/:recipeId/review',ensureAuthenticated, async (req, res) => {
     const { reviewText, rating } = req.body;
