@@ -27,7 +27,7 @@ const addReview = async (recipeId, reviewerId, userId, reviewText, rating) => {
     };
 
     const insertInfo = await reviewsCol.insertOne(newReview);
-    if (!insertInfo.acknowledged || !insertInfo.insertedId) throw 'Could not add review';
+    if (!insertInfo.acknowledged || !insertInfo.insertedId) throw new Error ('Could not add review');
   
     const newId = insertInfo.insertedId;
     const review = await reviewsCol.findOne({_id: newId});
@@ -96,7 +96,7 @@ const addReviewComment = async (comment, reviewId, userId) => {
     helperFunctions.checkText(comment);
     const reviewsCol = await reviewsCollection();
     const review = await reviewsCol.findOne({_id: new ObjectId(reviewId)});
-    if (review === null) throw `Could not find review with id of ${id}`;
+    if (review === null) throw new Error(`Could not find review with id of ${id}`);
     let currentComments = review.comments;
     currentComments.push({comment: comment, author: userId});
     const updatedComments = {
@@ -109,7 +109,7 @@ const addReviewComment = async (comment, reviewId, userId) => {
         {returnDocument: 'after'}
     );
 
-    if (!updatedReview) throw `Could not update team with id of ${reviewId}`;
+    if (!updatedReview) throw new Error (`Could not update team with id of ${reviewId}`);
     
     return updatedReview;
 }
