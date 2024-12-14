@@ -83,5 +83,64 @@
   </div>
 {{/if}}
 
+//shoppingList button and measurement conversion
+
+<form id="measurement-form" class="measurement-form" >
+<div class="measurementConversion">
+    <label for="amount">Amount:</label>
+    <input type="text" id="amount" name="amount"placeholder="Convert Measurements Here">
+
+    <label for="fromUnit">From Unit:</label>
+    <select id="fromUnit" name="fromUnit">
+      <option value="tbsp">tbsp</option>
+      <option value="tsp">tsp</option>
+      <option value="oz">oz</option>
+      <option value="grams">grams</option>
+      <option value="floz">floz</option>
+      <option value="lb">lb</option>
+      <option value="pints">pints</option>
+      <option value="quarts">quarts</option>
+      <option value="gallons">gallons</option>
+      <option value="ml">ml</option>
+      <option value="cups">cups</option>
+      <option value="kg">kg</option>
+      <option value="liters">liters</option>
+    </select>
+
+    <label for="toUnit">To Unit:</label>
+    <select id="toUnit" name="toUnit">
+      <option value="tbsp">tbsp</option>
+      <option value="tsp">tsp</option>
+      <option value="oz">oz</option>
+      <option value="grams">grams</option>
+      <option value="floz">floz</option>
+      <option value="lb">lb</option>
+      <option value="pints">pints</option>
+      <option value="quarts">quarts</option>
+      <option value="gallons">gallons</option>
+      <option value="ml">ml</option>
+      <option value="cups">cups</option>
+      <option value="kg">kg</option>
+      <option value="liters">liters</option>
+    </select>
+
+    <button type="submit">Convert</button>
+</div>
+</form>
+<p id="disclaimer">Discaimer: This website uses a single standardized density of an average taken from multiple different types of flour. 
+  Volume to Mass (ex tbsp to grams) or Mass to Volume Measurements use denisty to convert so they are close approximations.
+  All other measurements are 100% accurate!</p>
+<ul id="conversionResults"> </ul>
+
+<form id="shoppingList-form" class="shoppingList-form" action="/shopping-list/{{recipe._id}}" method="POST" >
+<div>
+      <button type="submit" id="submitButton" name="submitButton">Add to Shopping List</button>
+    </div>
+</form>
+
+
+
 <a href="/create-recipe">Add Another Recipe</a>
+<a href="/shopping-list">View Shopping List</a>
 <script src="/public/js/recipe.js"></script>
+<script src='/public/js/measurementConversion.js'></script>
