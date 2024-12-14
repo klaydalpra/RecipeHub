@@ -107,6 +107,9 @@ h2 {
 #conversionResults {
     font-size: 85%; 
 }
+#disclaimer {
+  font-size: 65%; 
+}
 
 /* Navigation links */
 a {
