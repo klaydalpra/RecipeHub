@@ -5,154 +5,127 @@ import bcrypt from 'bcrypt';
 import { recipeData } from './index.js';
 import helperFunctions from '../helpers.js';
 
-export const signUpUser = async (
-  firstName,
-  lastName,
-  userId,
-  password,
-  favoriteQuote,
-  themePreference,
-  role
-) => {
-    
-    if(!firstName || typeof firstName !== 'string' || firstName.trim().length < 2){
+export const signUpUser = async (firstName, lastName, email, userId, password) => {
+    if (!firstName || typeof firstName !== 'string' || firstName.trim().length < 2) {
         throw new Error('Invalid first name.');
     }
-    
-    if(!lastName || typeof lastName !== 'string' || lastName.trim().length < 2){
+
+    if (!lastName || typeof lastName !== 'string' || lastName.trim().length < 2) {
         throw new Error('Invalid last name.');
     }
-    if(!userId || typeof userId !== 'string' || userId.trim().length < 5){
+
+    if (!email || typeof email !== 'string' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        throw new Error('Invalid email format.');
+    }
+
+    if (!userId || typeof userId !== 'string' || userId.trim().length < 5) {
         throw new Error('Invalid user ID.');
     }
-    if(!password || password.length < 8) {
-        throw new Error('Invalid password.');
+
+    if (!password ||!/[A-Z]/.test(password) ||!/[0-9]/.test(password) ||!/[\W]/.test(password) ||password.length < 8) {
+        throw new Error('Invalid password. Password must be at least 8 characters long, include one uppercase letter, one number, and one special character.');
     }
-    if(!favoriteQuote || favoriteQuote.trim().length < 10) {
-        throw new Error('Invalid favorite quote.');
-    }
-    if(!themePreference || !themePreference.backgroundColor || !themePreference.fontColor) {
-        throw new Error('Invalid theme preference.');
-    }
-    if(!['admin', 'user'].includes(role.toLowerCase())) {
-        throw new Error('Invalid role.');
-    }
-    const bcrypt = await import('bcrypt');
-    const hashedPassword = await bcrypt.hash(password, 16);
     const usersCol = await usersCollection();
-    const existingUser = await usersCol.findOne({ userId: userId.toLowerCase() });
-    if(existingUser) {
-        throw new Error('User ID already exists.');
-    }
+    const existingUser = await usersCol.findOne({$or: [{ userId: userId.toLowerCase() }, { email: email.toLowerCase() }]});
+    if (existingUser){
+        throw new Error('User ID or email already exists.');
+    } 
+
+    const hashedPassword = await bcrypt.hash(password, 16);
     const newUser = {
         firstName: firstName.trim(),
         lastName: lastName.trim(),
+        email: email.toLowerCase(),
         userId: userId.toLowerCase(),
         password: hashedPassword,
-        favoriteQuote: favoriteQuote.trim(),
-        themePreference: {backgroundColor: themePreference.backgroundColor.toLowerCase(),fontColor: themePreference.fontColor.toLowerCase(),},
-        role: role.toLowerCase(),
         recipeIds: [],
         reviewIds: [],
         savedRecipeIds: [],
-        followingUserIds: []
+        followingUserIds: [],
+        registeredDate: new Date().toISOString()
     };
+
     const insertResult = await usersCol.insertOne(newUser);
-    if(!insertResult.acknowledged) {
+    if (!insertResult.acknowledged) {
         throw new Error('Failed to create user.');
     }
-    return{
+
+    return {
         registrationCompleted: true
     };
 };
 
 export const signInUser = async (userId, password) => {
-    // userId = helperFunctions.checkUserId(userId);
-    // helperFunctions.checkPassword(password);
+    if (!userId || typeof userId !== 'string' || userId.trim().length < 5) {
+        throw new Error('Invalid user ID.');
+    }
+    if (!password || typeof password !== 'string' || password.trim().length < 8) {
+        throw new Error('Invalid password.');
+    }
 
     const usersCol = await usersCollection();
-    const user = await usersCol.findOne({userId: userId});
-    if (user === null) {
-        throw "Either the userId or password is invalid";
-    } else {
-        let comparePasswords = false;
+    const user = await usersCol.findOne({ userId: userId.toLowerCase() });
 
-        try {
-            comparePasswords = await bcrypt.compare(password, user.password);
-        } catch (e) {
-            throw `Error signing in: ${e}`
-        }
-        try {
-            if (comparePasswords) {
-                const {
-                    _id,
-                    firstName,
-                    lastName,
-                    userId,
-                    hashedPassword,
-                    favoriteQuote,
-                    themePreference,
-                    role,
-                    recipeIds,
-                    reviewIds,
-                    savedRecipeIds,
-                    followingUserIds
-                } = user;
-                return {
-                    id: _id.toString(),
-                    firstName: firstName,
-                    lastName: lastName,
-                    userId: userId,
-                    password: hashedPassword,
-                    favoriteQuote: favoriteQuote,
-                    themePreference: themePreference,
-                    role: role,
-                    recipeIds: recipeIds,
-                    reviewIds: reviewIds,
-                    savedRecipeIds: savedRecipeIds,
-                    followingUserIds: followingUserIds
-                };
-            }
-        } catch (e) {
-            throw "Either the userId or password is invalid";
-        }
+    if (!user) {
+        throw new Error('Either the user ID or password is invalid.');
     }
+
+    const isPasswordMatch = await bcrypt.compare(password, user.password);
+    if (!isPasswordMatch) {
+        throw new Error('Either the user ID or password is invalid.');
+    }
+
+    return {
+        id: user._id.toString(),
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        userId: user.userId,
+        recipeIds: user.recipeIds,
+        reviewIds: user.reviewIds,
+        savedRecipeIds: user.savedRecipeIds,
+        followingUserIds: user.followingUserIds
+    };
 };
 
-export const getUserById = async(id) => {
+export const getUserById = async (id) => {
     helperFunctions.checkId(id);
     const usersCol = await usersCollection();
-    const user = await usersCol.findOne({_id: new ObjectId(id)});
-    if (user === null) throw `Could not find user with id of ${id}`;
+    const user = await usersCol.findOne({ _id: new ObjectId(id) });
+    if (!user) throw new Error(`Could not find user with ID: ${id}`);
 
     user._id = user._id.toString();
-  
     return user;
-}
+};
 
 export const saveRecipe = async (recipeId, userId) => {
     helperFunctions.checkId(recipeId);
     helperFunctions.checkId(userId);
     const usersCol = await usersCollection();
-    const user = await usersCol.findOne({_id: new ObjectId(userId)});
-    let currentSavedRecipeIds = user.savedRecipeIds;
-    currentSavedRecipeIds.push(recipeId)
-    const newSavedRecipeIds = {
-        savedRecipeIds: currentSavedRecipeIds
+    const user = await usersCol.findOne({ _id: new ObjectId(userId) });
+
+    if (!user) {
+        throw new Error(`User with ID: ${userId} does not exist.`);
     }
+
+    const currentSavedRecipeIds = Array.isArray(user.savedRecipeIds) ? user.savedRecipeIds : [];
+    currentSavedRecipeIds.push(recipeId);
+
     const updatedUser = await usersCol.updateOne(
-        {_id: new ObjectId(userId)},
-        {$set: newSavedRecipeIds},
-        {returnDocument: 'after'}
+        { _id: new ObjectId(userId) },
+        { $set: { savedRecipeIds: currentSavedRecipeIds } },
+        { returnDocument: 'after' }
     );
 
-    if (!updatedUser) throw `Could not save recipe ${recipeId} for user ${userId}`;
+    if (!updatedUser.acknowledged) {
+        throw new Error(`Could not save recipe ${recipeId} for user ${userId}.`);
+    }
 
-    recipeData.recipeSaved(recipeId, userId);
+    await recipeData.recipeSaved(recipeId, userId);
 
     return updatedUser;
-}
+};
 
 export const closeDbConnection = async () => {
-  await closeConnection();
+    await closeConnection();
 };

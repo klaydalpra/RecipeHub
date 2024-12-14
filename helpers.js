@@ -23,7 +23,15 @@ const helperFunctions = {
         rating = parseInt(rating);
         if (typeof rating !== 'number') throw new Error('Rating must be a number');
         if (rating > 10 || rating < 0) throw new Error('Rating must be between 1-10');
+    },
+
+    checkEmail(email) {
+        if (!email || typeof email !== 'string' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+            throw new Error('Invalid email format.');
+        }
     }
 };
+
+
 
 export default helperFunctions;
