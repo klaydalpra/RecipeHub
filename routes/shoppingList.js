@@ -1,71 +1,58 @@
 
 import { ObjectId } from 'mongodb';
 import { Router } from 'express';
-import *as sdata from '../data/shoppingList.js';
+import * as sdata from '../data/shoppingList.js';
 const router = Router();
 import { ensureAuthenticated } from '../middleware/authMiddleware.js';
-import * as hF from '../helpers.js';
+import helperFunctions from '../helpers.js';
 import xss from 'xss';
 
 router.use(ensureAuthenticated);
 
-router
-  .route('/')
-  .get(async (req, res) => {
-    let userXId = xss(req.session.user);
-    try {
-      userXId = hF.checkIsStr(userXId);
-    } catch (e) {
-      return res.status(400).render('error.handlebars', {message: e});
-    }
-    try {
-      let ingredients = await sdata.getShoppingList(userXId);
-      let shopMessage = '';
-      if (Object.keys(ingredients).length === 0 ||ingredients === "null" || typeof ingredients === 'undefined'){
-        shopMessage = 'Shopping List is Empty! Make sure you are signed in to see your shopping list!';
-        return res.status(200).render('shoppingList.handlebars', {shopMessage: shopMessage}); //
-      } else{
-      return res.status(200).render('shoppingList.handlebars', {shoppingList: ingredients});
+router.get('/', async (req, res) => {
+  const userId = req.session.user.id;
+
+  try {
+      const shoppingList = await sdata.getShoppingList(userId);
+
+      if (shoppingList.length === 0) {
+          return res.status(200).render('shoppingList', {
+              shopMessage: 'Your shopping list is empty!',
+          });
       }
-    } catch (e) {
-      return res.status(404).render('error.handlebars', {message: e});
-    }
-  })
 
+      res.status(200).render('shoppingList', { shoppingList });
+  } catch (e) {
+      console.error('Error fetching shopping list:', e.message);
+      res.status(500).render('error', { message: 'Failed to load shopping list.' });
+  }
+});
 
-  
-  router
-  .route('/:recipeId')
-  .post(async (req, res) => {
-    let userXId = xss(req.session.user);
-    let recipeX = xss(req.params.recipeId);
-    try {
-    if (!ObjectId.isValid(recipeX)) throw 'invalid id object for recipe';
-    } catch (e) {
-      return res.status(400).render('error.handlebars', {message: e});
-    }
-    try {
-      await sdata.addShoppingListItem(userXId, recipeX);
-      return res.status(200).redirect('/shopping-list');
-    } catch (e) {
-      return res.status(404).render('error.handlebars', {message: e});
-    }
-  })
+router.post('/:recipeId', async (req, res) => {
+  const userId = req.session.user.id;
+  const recipeId = req.params.recipeId;
 
-  .get(async (req, res) => {
-    let userXId = xss(req.session.user);
-    let recipeX = xss(req.params.recipeId);
-    try {
-    if (!ObjectId.isValid(recipeX)) throw 'invalid id object for recipe';
-    } catch (e) {
-      return res.status(400).render('error.handlebars', {message: e});
-    }
-    try {
-      await sdata.removeShoppingListItem(userXId, recipeX);
-      return res.status(200).redirect('/shopping-list');
-    } catch (e) {
-      return res.status(404).render('error.handlebars', {message: e});
-    }
-  });
+  try {
+      await sdata.addShoppingListItem(userId, recipeId);
+      res.redirect('/shopping-list');
+  } catch (e) {
+      console.error('Error adding to shopping list:', e.message);
+      res.status(400).render('error', { message: e.message });
+  }
+});
+
+router.get('/:recipeId', async (req, res) => {
+  const userId = req.session.user.id;
+  const recipeId = req.params.recipeId;
+
+  try {
+      await sdata.removeShoppingListItem(userId, recipeId);
+      res.redirect('/shopping-list');
+  } catch (e) {
+      console.error('Error removing from shopping list:', e.message);
+      res.status(400).render('error', { message: e.message });
+  }
+});
+
 
 export default router;

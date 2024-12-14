@@ -29,7 +29,13 @@ const helperFunctions = {
         if (!email || typeof email !== 'string' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
             throw new Error('Invalid email format.');
         }
-    }
+    },
+    checkIsStr(input) {
+        if (!input || typeof input !== 'string' || input.trim().length === 0) {
+            throw new Error('Input must be a non-empty string.');
+        }
+        return input.trim();
+    },
 };
 
 
