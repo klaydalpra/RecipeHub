@@ -22,7 +22,7 @@ router
       let ingredients = await sdata.getShoppingList(userXId);
       let shopMessage = '';
       if (Object.keys(ingredients).length === 0 ||ingredients === "null" || typeof ingredients === 'undefined'){
-        shopMessage = 'Shopping List is Empty!';
+        shopMessage = 'Shopping List is Empty! Make sure you are signed in to see your shopping list!';
         return res.status(200).render('shoppingList.handlebars', {shopMessage: shopMessage}); //
       } else{
       return res.status(200).render('shoppingList.handlebars', {shoppingList: ingredients});
