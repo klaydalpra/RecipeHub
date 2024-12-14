@@ -11,10 +11,42 @@
     <a href="/signupuser">Sign Up</a>
   {{/if}}
 </nav>
-<p>Welcome to Recipe Hub!</p>
 
-<form action="/searchrecipe" method="POST">
-  <label for="searchByTitle">Search for a recipe:</label>
-  <input type="text" id="searchByTitle" name="searchByTitle" required placeholder="Enter recipe keyword">
-  <button type="submit" id="submit-search-button">Search</button>
-</form>
+<section id="search-section">
+  <h2>Search for Recipes</h2>
+  <form action="/searchrecipe" method="POST">
+    <input type="text" name="searchQuery" placeholder="Search recipes..." required>
+    <select name="filter" id="filter">
+        <option value="all">All</option>
+        <option value="dietary">Dietary Restrictions</option>
+        <option value="cuisine">Cuisine</option>
+        <option value="ingredients">Ingredients</option>
+    </select>
+
+    <button type="submit">Search</button>
+  </form>
+</section>
+
+         <section id="trending-section">
+            <h2>Trending / Recently Posted Recipes</h2>
+            <ul>
+                {{#each trendingRecipes}}
+                    <li>
+                        <h3>
+                          <a href="/recipes/{{this.id}}">{{this.name}}</a>
+                        </h3>
+                        <p><strong>Cuisine:</strong> {{this.cuisine}}</p>
+                        <p><strong>Posted on:</strong> {{this.postedDate}}</p>
+                    </li>
+                {{/each}}
+            </ul>
+        </section>
+
+        <script>
+        // Clear button functionality
+        document.getElementById('clear-button').addEventListener('click', () => {
+            document.getElementById('search-input').value = '';
+            document.getElementById('results-list').innerHTML = '';
+        });
+    </script>
+
