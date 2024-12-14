@@ -8,6 +8,7 @@ import { userData } from './index.js';
 import  helperFunctions from '../helpers.js';
 
 //test
+
 const addReview = async (recipeId, reviewerId, userId, reviewText, rating) => {
     recipeId = helperFunctions.checkId(recipeId);
     reviewerId = helperFunctions.checkId(reviewerId);
@@ -27,41 +28,42 @@ const addReview = async (recipeId, reviewerId, userId, reviewText, rating) => {
     };
 
     const insertInfo = await reviewsCol.insertOne(newReview);
-    if (!insertInfo.acknowledged || !insertInfo.insertedId) throw new Error ('Could not add review');
-  
+    if (!insertInfo.acknowledged || !insertInfo.insertedId) throw new Error('Could not add review');
+
     const newId = insertInfo.insertedId;
-    const review = await reviewsCol.findOne({_id: newId});
+    const review = await reviewsCol.findOne({ _id: newId });
 
     const recipesCol = await recipesCollection();
-    const recipe = await recipeData.getRecipeById(recipeId)
-    let currentRecipeReviewIds = recipe.reviewIds;
+    const recipe = await recipeData.getRecipeById(recipeId);
+    let currentRecipeReviewIds = Array.isArray(recipe.reviewIds) ? recipe.reviewIds : [];
     currentRecipeReviewIds.push(newId.toString());
     const updatedRecipe = {
         reviewIds: currentRecipeReviewIds
     };
 
     await recipesCol.updateOne(
-        {_id: new ObjectId(recipeId)},
-        {$set: updatedRecipe},
-        {returnDocument: 'after'}
+        { _id: new ObjectId(recipeId) },
+        { $set: updatedRecipe },
+        { returnDocument: 'after' }
     );
 
     const usersCol = await usersCollection();
-    const user = await userData.getUserById(reviewerId)
-    let currentUserReviewIds = user.reviewIds;
+    const user = await userData.getUserById(reviewerId);
+    let currentUserReviewIds = Array.isArray(user.reviewIds) ? user.reviewIds : [];
     currentUserReviewIds.push(newId.toString());
     const updatedUser = {
         reviewIds: currentUserReviewIds
     };
 
     await usersCol.updateOne(
-        {_id: new ObjectId(reviewerId)},
-        {$set: updatedUser},
-        {returnDocument: 'after'}
+        { _id: new ObjectId(reviewerId) },
+        { $set: updatedUser },
+        { returnDocument: 'after' }
     );
 
     return review;
-}
+};
+
 
 const getAllRecipeReviews = async (recipeId) => {
     recipeId = helperFunctions.checkId(recipeId);
@@ -118,4 +120,17 @@ const addReviewComment = async (comment, reviewId, userId) => {
     return updatedReview;
 }
 
-export { addReview, getAllRecipeReviews, getAllUserReviews, addReviewComment };
+const getReviewById = async (reviewId) => {
+    reviewId = helperFunctions.checkId(reviewId);
+
+    const reviewsCol = await reviewsCollection();
+    const review = await reviewsCol.findOne({ _id: new ObjectId(reviewId) });
+
+    if (!review) {
+        throw new Error(`No review found with ID: ${reviewId}`);
+    }
+
+    return review;
+};
+
+export { addReview, getAllRecipeReviews, getAllUserReviews, addReviewComment,getReviewById };
