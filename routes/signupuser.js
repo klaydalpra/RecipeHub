@@ -4,23 +4,19 @@ import { signUpUser } from '../data/users.js';
 const router = express.Router();
 
 router.get('/', (req, res) => {
-  res.render('signupuser');
+    res.render('signupuser');
 });
 
 router.post('/', async (req, res) => {
-  try {
-    const { firstName, lastName, userId, password, favoriteQuote, backgroundColor, fontColor, role } = req.body;
-    const themePreference = {
-      backgroundColor: backgroundColor.toLowerCase(),
-      fontColor: fontColor.toLowerCase(),
-    };
+    try {
+        const { firstName, lastName, email, userId, password } = req.body;
 
-    await signUpUser(firstName, lastName, userId, password, favoriteQuote, themePreference, role);
+        await signUpUser(firstName, lastName, email, userId, password);
 
-    res.redirect('/login');
-  } catch (error) {
-    res.status(400).render('signupuser', { error: error.message });
-  }
+        res.redirect('/signinuser');
+    } catch (error) {
+        res.status(400).render('signupuser', { error: error.message });
+    }
 });
 
 export default router;

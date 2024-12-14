@@ -66,7 +66,7 @@ const getRecipeById = async (id) => {
     helperFunctions.checkId(id);
     const recipesCol = await recipesCollection();
     const recipe = await recipesCol.findOne({_id: new ObjectId(id)});
-    if (recipe === null) throw `Could not find recipe with id of ${id}`;
+    if (recipe === null) throw new Error (`Could not find recipe with id of ${id}`);
 
     recipe._id = recipe._id.toString();
   
@@ -78,7 +78,8 @@ const recipeSaved = async (recipeId, userId) => {
     helperFunctions.checkId(userId);
     const recipesCol = await recipesCollection();
     const recipe = await recipesCol.findOne({_id: new ObjectId(recipeId)});
-    let currentSavedByUserIds = recipe.savedByUserIds;
+    let currentSavedByUserIds = Array.isArray(recipe.savedByUserIds) ? recipe.savedByUserIds : [];
+    if (currentSavedByUserIds.includes(userId)) throw new Error('This recipe has already been saved');
     currentSavedByUserIds.push(userId)
     const newSavedByUserIds = {
         savedByUserIds: currentSavedByUserIds
@@ -89,9 +90,16 @@ const recipeSaved = async (recipeId, userId) => {
         {returnDocument: 'after'}
     );
 
-    if (!updatedRecipe) throw `Could not save recipe ${recipeId} for user ${userId}`;
+    if (!updatedRecipe) throw new Error(`Could not save recipe ${recipeId} for user ${userId}`);
 
     return updatedRecipe;
 }
 
-export { addRecipe, getAllRecipes, getRecipeById, recipeSaved };
+const getTrendingRecipes = async () => {
+    const recipesCol = await recipesCollection();
+    const recipes = await recipesCol.find({}).toArray();
+    //recipes.sort((a, b) => b.savedByUserIds.length - a.savedByUserIds.length);
+    return recipes.slice(0, 10);
+}
+
+export { addRecipe, getAllRecipes, getRecipeById, recipeSaved, getTrendingRecipes };

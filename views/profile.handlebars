@@ -1,0 +1,37 @@
+
+
+<section id="profile-info">
+    <h2>Profile Information</h2>
+
+    {{#if isOwnProfile}}
+        <p><strong>Email:</strong> {{user.email}}</p>
+    {{/if}}
+
+    <p><strong>Username:</strong> {{user.userId}}</p>
+    <p><strong>Registered On:</strong> {{user.registeredDate}}</p>
+</section>
+
+<section id="user-reviews">
+    <h2>Reviews</h2>
+    {{#if user.reviewIds.length}}
+        <ul>
+            {{#each user.reviewIds}}
+                <li>
+                    <a href="/review/{{this}}">Review ID: {{this}}</a>
+                </li>
+            {{/each}}
+        </ul>
+    {{else}}
+        <p>No reviews yet.</p>
+    {{/if}}
+</section>
+
+<section id="profile-actions">
+    {{#if isOwnProfile}}
+        <h2>Actions</h2>
+        <ul>
+            <li><a href="/edit-profile">Edit Profile</a></li>
+            <li><a href="/signout">Sign Out</a></li>
+        </ul>
+    {{/if}}
+</section>

@@ -6,9 +6,11 @@
   {{#if user}}
     <a href="/profile">Profile</a>
     <a href="/signout">Sign Out</a>
+    <a href="/create-recipe">Create Recipe</a>
   {{else}}
     <a href="/login">Login</a>
     <a href="/signupuser">Sign Up</a>
+    <a href="/create-recipe">Create Recipe</a>
   {{/if}}
 </nav>
 
@@ -33,7 +35,7 @@
                 {{#each trendingRecipes}}
                     <li>
                         <h3>
-                          <a href="/recipes/{{this.id}}">{{this.name}}</a>
+                          <a href="/recipe/{{this._id}}">{{this.name}}</a>
                         </h3>
                         <p><strong>Cuisine:</strong> {{this.cuisine}}</p>
                         <p><strong>Posted on:</strong> {{this.postedDate}}</p>

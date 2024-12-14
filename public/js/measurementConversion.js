@@ -39,6 +39,10 @@ const converttsp = (curM, measurement) => {
         newM = curM * 4.9289;
         return newM;
     }
+    if (measurement === 'liters') {
+        newM = curM * .0049289;
+        return newM;
+    }
     return false;
 };
 
@@ -83,6 +87,10 @@ const converttsp = (curM, measurement) => {
         newM = curM * 14.786;
         return newM;
     }
+    if (measurement === 'liters') {
+        newM = curM * .014786;
+        return newM;
+    }
     return false;
 };
  const convertCups = (curM, measurement) => {
@@ -124,6 +132,10 @@ const converttsp = (curM, measurement) => {
     }
     if (measurement === 'ml') {
         newM = curM * 273.0;
+        return newM;
+    }
+    if (measurement === 'liters') {
+        newM = curM * .273;
         return newM;
     }
     return false;
@@ -510,17 +522,26 @@ if (measurementForm) {
         let initialUnit = initialUnitSelected.value;
         let newUnit = newUnitSelected.value;
         let mAmount = measurementParse(amount);
-        if (!mAmount){
-             let li = document.createElement('li');
+       
+       if (amount.trim()===''){
+            let li = document.createElement('li');
             li.classList.add('error');
-            li.innerHTML = `1 Could not convert ${amount}${initialUnit} to ${newUnit}.`;
+            li.innerHTML = `Please enter a valid amount (ex: 1.1, 2, 1/4...).`;
+            myUl.appendChild(li);
+            measurementForm.reset(); 
+        }
+        else if (!mAmount){
+            let li = document.createElement('li');
+            li.classList.add('error');
+            li.innerHTML = `Could not convert ${amount}${initialUnit} to ${newUnit}, amount input not valid. Please enter a valid amount (ex: 1.1, 2, 1/4...).`;
             myUl.appendChild(li);
             measurementForm.reset();
         }
+        
         else if (!convertMeasurements(mAmount, initialUnit, newUnit)){
             let li = document.createElement('li');
             li.classList.add('error');
-            li.innerHTML = `Cannot convert ${amount}${initialUnit} to ${newUnit}.`;
+            li.innerHTML = `Cannot convert ${initialUnit} to ${newUnit}. Please chose a different Unit to convert to`;
             myUl.appendChild(li);
             measurementForm.reset(); 
         }

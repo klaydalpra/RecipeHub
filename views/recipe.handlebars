@@ -1,73 +1,151 @@
-<h1>{{ recipe.name }}</h1>
-<p>{{ recipe._id }}</p>
+<div class="recipe_container">
+  <h1>{{ recipe.name }}</h1>
+  <p hidden>{{ recipe._id }}</p>
+  <h2>Ingredients</h2>
+    <ul class="recipe_ingredients_list">
+      {{#each recipe.ingredients}}
+        <li>{{this}} {{@key}}</li>
+      {{/each}}
+    </ul>
+  <h2>Instructions</h2>
+  <ol class="recipe_instructions_list">
+    {{#each recipe.instructions}}
+      <li>{{this}}</li>
+    {{/each}}
+  </ol>
+  {{#if user}}
+  <form id="save-review-form" method="POST" action="/recipe/{{recipe._id}}/save" name="save-review-form" type="button">
+    <button class="add-comment-button" name="add-comment-button" type="submit">Save Recipe</button>
+  </form>
+  {{/if}}
+</div>
 
-<h2>Ingredients</h2>
-<ul>
-  {{#each recipe.ingredients}}
-    <li>{{this}} {{@key}}</li>
-  {{/each}}
-</ul>
+<div class="review_container">
+  <form id="add-review-form" name="add-review-form" method="POST" action="/recipe/{{recipe._id}}/review">
+    <div class="review_text_container">
+      <!-- Review Text -->
+      <label for="reviewText">Review:</label>
+      <input type="text" id="reviewText" name="reviewText" placeholder="Leave a review..." required>
+      <br><br>
 
-<h2>Instructions</h2>
-<ol>
-  {{#each recipe.instructions}}
-    <li>{{this}}</li>
-  {{/each}}
-</ol>
+      <!-- Rating -->
+      <div class="review_rating_container">
+        <label for="rating">Rating:</label>
+        <select id="rating" name="rating">
+          <option value="">Please choose a rating</option>
+          <option value="1">1</option>
+          <option value="2">2</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="5">5</option>
+          <option value="6">6</option>
+          <option value="7">7</option>
+          <option value="8">8</option>
+          <option value="9">9</option>
+          <option value="10">10</option>
+        </select>
+      </div>
+    </div>
+    <br><br>
 
-<form id="add-review-form" method="POST" action="/recipe/{{recipe._id}}/review">
-  <!-- Review Text -->
-  <label for="reviewText">Review:</label>
-  <input type="text" id="reviewText" name="reviewText" placeholder="Leave a review..." required>
-  <br><br>
-
-  <!-- Rating -->
-  <label for="rating">Rating:</label>
-  <select id="rating" name="rating">
-    <option value="">Please choose a rating</option>
-    <option value="1">1</option>
-    <option value="2">2</option>
-    <option value="3">3</option>
-    <option value="4">4</option>
-    <option value="5">5</option>
-    <option value="6">6</option>
-    <option value="7">7</option>
-    <option value="8">8</option>
-    <option value="9">9</option>
-    <option value="10">10</option>
-  </select>
-  <br><br>
-
-  <!-- Submit Button -->
-  <button type="submit" id="submit-review-button">Add Review</button>
-</form>
+    <!-- Submit Button -->
+    <button type="submit" id="submit-review-button" name="submit-review-button">Add Review</button>
+  </form>
+</div>
 
 {{#if reviews}}
-  <h2>Reviews</h2>
-  {{#each reviews}}
-    <ul>
-        <li>{{this.reviewText}}</li>
-        <li>Rating: {{this.rating}}</li>
-        <li><a href="/profile/{{this.reviewerId}}">{{this.userId}}</a></li>
-    </ul>
-    {{#if this.comments}}
-      <p>Comments</p>
-      {{#each this.comments}}
-        <ul>
-          <li>{{this.author}}</li>
-          <li>{{this.comment}}</li>
+  <div class="recipe_reviews_container">
+    <h2>Reviews</h2>
+    {{#each reviews}}
+      <div class="review_container">
+        <ul class="review_list">
+            <li><a href="/profile/{{this.reviewerId}}">{{this.userId}}</a></li>
+            <li>{{this.reviewText}}</li>
+            <li>Rating: {{this.rating}}</li>
         </ul>
-      {{/each}}
-    {{/if}}
-    <form id="add-comment-form" method="POST" action="/recipe/{{this.recipeId}}/review/{{this._id}}/comment">
-      <!-- Review Text -->
-      <label for="commentText">Comment:</label>
-      <input type="text" id="commentText" name="commentText" placeholder="Leave a comment..." required>
-      <br><br>
-      <!-- Submit Button -->
-      <button type="submit" id="submit-comment-button">Add Comment</button>
-    </form>
-  {{/each}}
+        {{#if this.comments}}
+          {{#each this.comments}}
+            <div class="comment_container">
+              <ul class="comment_list">
+                <li>{{this.author}}</li>
+                <li>{{this.comment}}</li>
+              </ul>
+            </div>
+          {{/each}}
+        {{/if}}
+        <div class="comment_container">
+          <button class="add-comment-button" name="add-comment-button" type="button">Comment</button>
+          <form class="add-comment-form" name="add-comment-form" method="POST" action="/recipe/{{this.recipeId}}/review/{{this._id}}/comment" hidden>
+            <!-- Review Text -->
+            <label for="commentText"></label>
+            <input type="text" class="commentText" name="commentText" placeholder="Leave a comment..." required>
+            <br><br>
+            <!-- Submit Button -->
+            <button type="submit" class="submit-comment-button" name="submit-comment-button">Add Comment</button>
+            <button class="cancel-comment-button" name="cancel-comment-button" type="reset">Cancel</button>
+          </form>
+        </div>
+      </div>
+    {{/each}}
+  </div>
 {{/if}}
 
+<form id="measurement-form" class="measurement-form" >
+<div class="measurementConversion">
+    <label for="amount">Amount:</label>
+    <input type="text" id="amount" name="amount"placeholder="Convert Measurements Here">
+
+    <label for="fromUnit">From Unit:</label>
+    <select id="fromUnit" name="fromUnit">
+      <option value="tbsp">tbsp</option>
+      <option value="tsp">tsp</option>
+      <option value="oz">oz</option>
+      <option value="grams">grams</option>
+      <option value="floz">floz</option>
+      <option value="lb">lb</option>
+      <option value="pints">pints</option>
+      <option value="quarts">quarts</option>
+      <option value="gallons">gallons</option>
+      <option value="ml">ml</option>
+      <option value="cups">cups</option>
+      <option value="kg">kg</option>
+      <option value="liters">liters</option>
+    </select>
+
+    <label for="toUnit">To Unit:</label>
+    <select id="toUnit" name="toUnit">
+      <option value="tbsp">tbsp</option>
+      <option value="tsp">tsp</option>
+      <option value="oz">oz</option>
+      <option value="grams">grams</option>
+      <option value="floz">floz</option>
+      <option value="lb">lb</option>
+      <option value="pints">pints</option>
+      <option value="quarts">quarts</option>
+      <option value="gallons">gallons</option>
+      <option value="ml">ml</option>
+      <option value="cups">cups</option>
+      <option value="kg">kg</option>
+      <option value="liters">liters</option>
+    </select>
+
+    <button type="submit">Convert</button>
+</div>
+</form>
+<p id="disclaimer">Discaimer: This website uses a single standardized density of an average taken from multiple different types of flour. 
+  Volume to Mass (ex tbsp to grams) or Mass to Volume Measurements use denisty to convert so they are close approximations.
+  All other measurements are 100% accurate!</p>
+<ul id="conversionResults"> </ul>
+
+<form id="shoppingList-form" class="shoppingList-form" action="/shopping-list/{{recipe._id}}" method="POST" >
+<div>
+      <button type="submit" id="submitButton" name="submitButton">Add to Shopping List</button>
+    </div>
+</form>
+
+
+
 <a href="/create-recipe">Add Another Recipe</a>
+<a href="/shopping-list">View Shopping List</a>
+<script src="/public/js/recipe.js"></script>
+<script src='/public/js/measurementConversion.js'></script>

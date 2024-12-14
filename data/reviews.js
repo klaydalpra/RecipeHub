@@ -8,6 +8,7 @@ import { userData } from './index.js';
 import  helperFunctions from '../helpers.js';
 
 //test
+
 const addReview = async (recipeId, reviewerId, userId, reviewText, rating) => {
     recipeId = helperFunctions.checkId(recipeId);
     reviewerId = helperFunctions.checkId(reviewerId);
@@ -27,55 +28,60 @@ const addReview = async (recipeId, reviewerId, userId, reviewText, rating) => {
     };
 
     const insertInfo = await reviewsCol.insertOne(newReview);
-    if (!insertInfo.acknowledged || !insertInfo.insertedId) throw 'Could not add review';
-  
+    if (!insertInfo.acknowledged || !insertInfo.insertedId) throw new Error('Could not add review');
+
     const newId = insertInfo.insertedId;
-    const review = await reviewsCol.findOne({_id: newId});
+    const review = await reviewsCol.findOne({ _id: newId });
 
     const recipesCol = await recipesCollection();
-    const recipe = await recipeData.getRecipeById(recipeId)
-    let currentRecipeReviewIds = recipe.reviewIds;
+    const recipe = await recipeData.getRecipeById(recipeId);
+    let currentRecipeReviewIds = Array.isArray(recipe.reviewIds) ? recipe.reviewIds : [];
     currentRecipeReviewIds.push(newId.toString());
     const updatedRecipe = {
         reviewIds: currentRecipeReviewIds
     };
 
     await recipesCol.updateOne(
-        {_id: new ObjectId(recipeId)},
-        {$set: updatedRecipe},
-        {returnDocument: 'after'}
+        { _id: new ObjectId(recipeId) },
+        { $set: updatedRecipe },
+        { returnDocument: 'after' }
     );
 
     const usersCol = await usersCollection();
-    const user = await userData.getUserById(reviewerId)
-    let currentUserReviewIds = user.reviewIds;
+    const user = await userData.getUserById(reviewerId);
+    let currentUserReviewIds = Array.isArray(user.reviewIds) ? user.reviewIds : [];
     currentUserReviewIds.push(newId.toString());
     const updatedUser = {
         reviewIds: currentUserReviewIds
     };
 
     await usersCol.updateOne(
-        {_id: new ObjectId(reviewerId)},
-        {$set: updatedUser},
-        {returnDocument: 'after'}
+        { _id: new ObjectId(reviewerId) },
+        { $set: updatedUser },
+        { returnDocument: 'after' }
     );
 
     return review;
-}
+};
+
 
 const getAllRecipeReviews = async (recipeId) => {
-    const recipe = await recipeData.getRecipeById(recipeId)
-    const recipeReviewIds = recipe.reviewIds.map((reviewId) => new ObjectId(reviewId));
+    recipeId = helperFunctions.checkId(recipeId);
+    const recipe = await recipeData.getRecipeById(recipeId);
+
+    const recipeReviewIds = Array.isArray(recipe.reviewIds)
+        ? recipe.reviewIds.map((reviewId) => new ObjectId(reviewId))
+        : [];
+
 
     const reviewsCol = await reviewsCollection();
-    const reviews = reviewsCol.find(
-        {_id: {
-            $in: recipeReviewIds
-        }}
-    ).toArray();
+    const reviews = recipeReviewIds.length > 0
+        ? await reviewsCol.find({ _id: { $in: recipeReviewIds } }).toArray()
+        : [];
 
     return reviews;
-}
+};
+
 
 const getAllUserReviews = async (userId) => {
     const user = await userData.getUserById(userId)
@@ -96,7 +102,7 @@ const addReviewComment = async (comment, reviewId, userId) => {
     helperFunctions.checkText(comment);
     const reviewsCol = await reviewsCollection();
     const review = await reviewsCol.findOne({_id: new ObjectId(reviewId)});
-    if (review === null) throw `Could not find review with id of ${id}`;
+    if (review === null) throw new Error(`Could not find review with id of ${id}`);
     let currentComments = review.comments;
     currentComments.push({comment: comment, author: userId});
     const updatedComments = {
@@ -109,9 +115,22 @@ const addReviewComment = async (comment, reviewId, userId) => {
         {returnDocument: 'after'}
     );
 
-    if (!updatedReview) throw `Could not update team with id of ${reviewId}`;
+    if (!updatedReview) throw new Error (`Could not update team with id of ${reviewId}`);
     
     return updatedReview;
 }
 
-export { addReview, getAllRecipeReviews, getAllUserReviews, addReviewComment };
+const getReviewById = async (reviewId) => {
+    reviewId = helperFunctions.checkId(reviewId);
+
+    const reviewsCol = await reviewsCollection();
+    const review = await reviewsCol.findOne({ _id: new ObjectId(reviewId) });
+
+    if (!review) {
+        throw new Error(`No review found with ID: ${reviewId}`);
+    }
+
+    return review;
+};
+
+export { addReview, getAllRecipeReviews, getAllUserReviews, addReviewComment,getReviewById };
