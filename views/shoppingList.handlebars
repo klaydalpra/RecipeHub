@@ -5,7 +5,7 @@
   {{#each shoppingList}}
     <h2> {{this.name}}</h2>
 <div>
-      <button type="submit" id="button{{recipeId}}" name="deleteButton" formaction= "/shopping-list/{{recipeId}}">Delete</button >
+      <button type="submit" id="button{{this._id}}" name="deleteButton" formaction= "/shopping-list/{{this._id}}">Delete</button >
     </div>
     <table>
       <thead>
