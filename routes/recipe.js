@@ -59,13 +59,13 @@ router.post('/:recipeId/review/:reviewId/comment', async(req, res) => {
         recipeId = helperFunctions.checkId(recipeId);
         helperFunctions.checkText(comment);
     } catch(e) {
-        return res.status(400).redirect(`/recipe/${recipeId}`, {error: e})
+        return res.redirect(`/recipe/${recipeId}?error=${encodeURIComponent(e.message)}`);
     }
     try {
         const reviewComment = await reviewData.addReviewComment(comment, reviewId, user.userId);
         res.redirect(`/recipe/${recipeId}`)
     } catch(e) {
-        return res.status(500).redirect(`/recipe/${recipeId}`, {error: e})
+        return res.redirect(`/recipe/${recipeId}?error=${encodeURIComponent(e.message)}`);
     }
 });
 

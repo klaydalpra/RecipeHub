@@ -66,7 +66,7 @@ const getRecipeById = async (id) => {
     helperFunctions.checkId(id);
     const recipesCol = await recipesCollection();
     const recipe = await recipesCol.findOne({_id: new ObjectId(id)});
-    if (recipe === null) throw `Could not find recipe with id of ${id}`;
+    if (recipe === null) throw new Error (`Could not find recipe with id of ${id}`);
 
     recipe._id = recipe._id.toString();
   
@@ -89,7 +89,7 @@ const recipeSaved = async (recipeId, userId) => {
         {returnDocument: 'after'}
     );
 
-    if (!updatedRecipe) throw `Could not save recipe ${recipeId} for user ${userId}`;
+    if (!updatedRecipe) throw new Error(`Could not save recipe ${recipeId} for user ${userId}`);
 
     return updatedRecipe;
 }
