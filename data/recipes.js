@@ -94,4 +94,11 @@ const recipeSaved = async (recipeId, userId) => {
     return updatedRecipe;
 }
 
-export { addRecipe, getAllRecipes, getRecipeById, recipeSaved };
+const getTrendingRecipes = async () => {
+    const recipesCol = await recipesCollection();
+    const recipes = await recipesCol.find({}).toArray();
+    //recipes.sort((a, b) => b.savedByUserIds.length - a.savedByUserIds.length);
+    return recipes.slice(0, 10);
+}
+
+export { addRecipe, getAllRecipes, getRecipeById, recipeSaved, getTrendingRecipes };
