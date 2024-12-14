@@ -75,14 +75,4 @@ export const removeShoppingListItem = async (userId, recipeId) => {
         }
         return iList;
     };
-    export const getShoppingListArr = async (userId) => {
-        userId = hF.checkIsStr(userId);
-        let shoppingList = [];
-        let usersCol = await usersCollection();
-        let user = await usersCol.findOne({ userId: userId }); // check if user exists
-        if (user === null) throw 'No user with indicated id';
-        if (user.shoppingList === null) return shoppingList;
-        shoppingList = user.shoppingList;
-        return shoppingList;
-    };
-
+    

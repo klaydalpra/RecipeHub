@@ -64,18 +64,22 @@ const addReview = async (recipeId, reviewerId, userId, reviewText, rating) => {
 }
 
 const getAllRecipeReviews = async (recipeId) => {
-    const recipe = await recipeData.getRecipeById(recipeId)
-    const recipeReviewIds = recipe.reviewIds.map((reviewId) => new ObjectId(reviewId));
+    recipeId = helperFunctions.checkId(recipeId);
+    const recipe = await recipeData.getRecipeById(recipeId);
+
+    const recipeReviewIds = Array.isArray(recipe.reviewIds)
+        ? recipe.reviewIds.map((reviewId) => new ObjectId(reviewId))
+        : [];
+
 
     const reviewsCol = await reviewsCollection();
-    const reviews = reviewsCol.find(
-        {_id: {
-            $in: recipeReviewIds
-        }}
-    ).toArray();
+    const reviews = recipeReviewIds.length > 0
+        ? await reviewsCol.find({ _id: { $in: recipeReviewIds } }).toArray()
+        : [];
 
     return reviews;
-}
+};
+
 
 const getAllUserReviews = async (userId) => {
     const user = await userData.getUserById(userId)
