@@ -39,6 +39,10 @@ const converttsp = (curM, measurement) => {
         newM = curM * 4.9289;
         return newM;
     }
+    if (measurement === 'liters') {
+        newM = curM * .0049289;
+        return newM;
+    }
     return false;
 };
 
@@ -83,6 +87,10 @@ const converttsp = (curM, measurement) => {
         newM = curM * 14.786;
         return newM;
     }
+    if (measurement === 'liters') {
+        newM = curM * .014786;
+        return newM;
+    }
     return false;
 };
  const convertCups = (curM, measurement) => {
@@ -124,6 +132,10 @@ const converttsp = (curM, measurement) => {
     }
     if (measurement === 'ml') {
         newM = curM * 273.0;
+        return newM;
+    }
+    if (measurement === 'liters') {
+        newM = curM * .273;
         return newM;
     }
     return false;
