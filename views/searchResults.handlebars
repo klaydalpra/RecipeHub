@@ -1,48 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{title}}</title>
-    <link rel="stylesheet" href="/styles.css"> 
-<body>
-    <header>
-        <a href="/">Back to Home</a>
-    </header>
-
+<div class="search-container">
     <section>
-        {{!-- Display the search criteria used --}}
         <h2>Search Criteria: {{filter}}</h2>
     </section>
     <section>
-        {{!-- Check if any recipes are found --}}
         {{#if recipes.length}}
             <ul>
-              <h2>Matching Recipes</h2>
                 {{#each recipes}}
-                    <li>
-                        <h3><a href="/recipe/{{this._id}}">{{this.name}}</a></h3>
-                        {{#if ../selectedFilter}}
-                          {{#if (eq ../selectedFilter "dietary")}}
-                           <p><strong>Dietary Needs:</strong> {{this.dietary}}</p>
-                        {{else if (eq ../selectedFilter "ingredients")}}
-                        <p><strong>Main Ingredients:</strong> {{this.ingredients}}</p>
-                        {{else}}
-                        <p><strong>Cuisine:</strong> {{this.cuisine}}</p>
-                        {{/if}}
-                      {{else}}
+                <li>
+                    <h3><a href="/recipe/{{this._id}}">{{this.name}}</a></h3>
+                    {{#if ../selectedFilter}}
+                    {{#if (eq ../selectedFilter "dietary")}}
+                    <p><strong>Dietary Needs:</strong> {{this.dietary}}</p>
+                    {{else if (eq ../selectedFilter "ingredients")}}
+                    <p><strong>Main Ingredients:</strong> {{this.ingredients}}</p>
+                    {{else}}
                     <p><strong>Cuisine:</strong> {{this.cuisine}}</p>
                     {{/if}}
-
-                <p><strong>Rating:</strong> {{this.rating}} / 5</p>
-                    </li>
+                    {{else}}
+                    <p><strong>Cuisine:</strong> {{this.cuisine}}</p>
+                    {{/if}}
+                </li>
                 {{/each}}
             </ul>
         {{else}}
             <p>No recipes found matching your criteria. Please try different search parameters.</p>
         {{/if}}
     </section>
-</body>
-<a href="/">Back to Home</a>
-</html>
-
+</div>
