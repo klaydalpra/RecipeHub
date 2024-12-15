@@ -11,22 +11,25 @@ router.get('/', ensureAuthenticated, async (req, res) => {
         const userId = req.session.user.id;
         const userProfile = await userData.getUserById(userId);
 
-
         let followingRecipes = [];
 
- 
-            const followingUserIds = userProfile.followingUserIds || [];
-            for (const followingId of followingUserIds) {
-                const recipes = await recipeData.getRecipesByUserId(followingId, 2);
-                
-                for (const recipe of recipes) {
-                    const author = await userData.getUserById2(recipe.author);
-                    recipe.authorName = author;
-                }
-                
-                followingRecipes.push(...recipes);
+        const followingUserIds = userProfile.followingUserIds || [];
+        for (const followingId of followingUserIds) {
+            const recipes = await recipeData.getRecipesByUserId(followingId, 2);
+            
+            for (const recipe of recipes) {
+                const author = await userData.getUserById2(recipe.author);
+                recipe.authorName = author;
             }
+            
+            followingRecipes.push(...recipes);
+        }
         
+        userProfile.registeredDate = new Date(userProfile.registeredDate).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+        });
 
         res.render('profile', {
             userProfile,
@@ -86,6 +89,12 @@ router.get('/:userId', async (req, res) => {
                 followingRecipes.push(...recipes);
             }
         }
+
+        userProfile.registeredDate = new Date(userProfile.registeredDate).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+        });
 
         res.render('profile', {
             userProfile,
