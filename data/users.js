@@ -25,6 +25,7 @@ export const signUpUser = async (firstName, lastName, email, userId, password) =
     if (!password ||!/[A-Z]/.test(password) ||!/[0-9]/.test(password) ||!/[\W]/.test(password) ||password.length < 8) {
         throw new Error('Invalid password. Password must be at least 8 characters long, include one uppercase letter, one number, and one special character.');
     }
+    
     const usersCol = await usersCollection();
     const existingUser = await usersCol.findOne({$or: [{ userId: userId.toLowerCase() }, { email: email.toLowerCase() }]});
     if (existingUser){

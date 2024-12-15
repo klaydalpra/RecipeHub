@@ -9,7 +9,12 @@ router.get('/', (req, res) => {
 
 router.post('/', async (req, res) => {
     try {
-        const { firstName, lastName, email, userId, password } = req.body;
+        const { firstName, lastName, email, userId, password, confirmPassword } = req.body;
+        if (password !== confirmPassword) {
+            return res.status(400).render('signupuser', { 
+                error: 'Passwords do not match.' 
+            });
+        }
 
         await signUpUser(firstName, lastName, email, userId, password);
 
