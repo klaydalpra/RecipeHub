@@ -10,7 +10,8 @@ router.get('/', (req, res) => {
         return res.status(500).render('error', { error: 'Failed to sign out. Please try again.' });
       }
       res.clearCookie('AuthCookie');
-      res.render('signoutuser', { message: 'You have been logged out.' });
+      const user = null;
+      res.render('signoutuser', { message: 'You have been logged out.', user });
     });
   } else {
     res.redirect('/login');
