@@ -59,18 +59,21 @@ router.get('/:userId', async (req, res) => {
 */
 router.get('/:userId', async (req, res) => {
     const userId = req.params.userId;
-    const currentUser = req.session.user;
+    const currentUser = req.session.user || null; // Handle unauthenticated users
 
     try {
         const userProfile = await userData.getUserById(userId);
-        const isOwnProfile = currentUser.id === userId;
+        const isOwnProfile = currentUser ? currentUser.id === userId : false;
 
         let followingRecipes = [];
+        let isFollowing = false;
 
-        const isFollowing = currentUser.followingUserIds?.includes(userId);
-        console.log("HERE" + isFollowing);
+        // Check if user is logged in and handle following logic
+        if (currentUser) {
+            isFollowing = currentUser.followingUserIds?.includes(userId);
+        }
 
-
+        // If viewing own profile, fetch recipes from followed users
         if (isOwnProfile) {
             const followingUserIds = userProfile.followingUserIds || [];
             for (const followingId of followingUserIds) {
@@ -91,10 +94,11 @@ router.get('/:userId', async (req, res) => {
             isFollowing
         });
     } catch (error) {
-        console.error(`Error fetchingaaa profile: ${error.message}`);
+        console.error(`Error fetching profile: ${error.message}`);
         res.status(500).render('error', { message: 'Error fetching profile.' });
     }
 });
+
 
 router.post('/follow/:profileId', ensureAuthenticated, async (req, res) => {
     const currentUserId = req.session.user.id;
