@@ -29,7 +29,7 @@ router.post('/', async (req, res) => {
                 break;
             case 'ingredients':
                 filteredRecipes = recipes.filter(recipe =>
-                    recipe.ingredients.some(ingredient =>
+                    Object.keys(recipe.ingredients).some(ingredient =>
                         ingredient.toLowerCase().includes(searchQuery.toLowerCase())
                     )
                 );

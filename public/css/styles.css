@@ -125,7 +125,10 @@ a:hover {
 .recipe_container, 
 .recipe_reviews_container, 
 .review_container, 
-.sign-in-container {
+.sign-in-container,
+.search-container,
+.trending-container,
+.search-container {
     max-width: 800px;
     margin: 20px auto;
     padding: 20px;
