@@ -8,12 +8,12 @@ const router = Router();
 router.get('/', ensureAuthenticated, async (req, res) => {
     try {
         const userId = req.session.user.id;
-        const user = await userData.getUserById(userId);
+        const userProfile = await userData.getUserById(userId);
 
         res.render('profile', {
-            user,
+            userProfile,
             isOwnProfile: true,
-            title: `${user.firstName} ${user.lastName}'s Profile`,
+            title: `${userProfile.firstName} ${userProfile.lastName}'s Profile`,
         });
     } catch (error) {
         console.error(`Error loading profile: ${error.message}`);
@@ -25,12 +25,12 @@ router.get('/', ensureAuthenticated, async (req, res) => {
 router.get('/:userId', async (req, res) => {
     try {
         const userId = helperFunctions.checkId(req.params.userId);
-        const user = await userData.getUserById(userId);
+        const userProfile = await userData.getUserById(userId);
 
         res.render('profile', {
-            user,
+            userProfile,
             isOwnProfile: false,
-            title: `${user.firstName} ${user.lastName}'s Profile`,
+            title: `${userProfile.firstName} ${userProfile.lastName}'s Profile`,
         });
     } catch (error) {
         console.error(`Error loading profile: ${error.message}`);
