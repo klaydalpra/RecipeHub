@@ -95,11 +95,67 @@ const recipeSaved = async (recipeId, userId) => {
     return updatedRecipe;
 }
 
-const getTrendingRecipes = async () => {
-    const recipesCol = await recipesCollection();
-    const recipes = await recipesCol.find({}).toArray();
-    //recipes.sort((a, b) => b.savedByUserIds.length - a.savedByUserIds.length);
-    return recipes.slice(0, 10);
-}
+const getTopRatedRecipes = async () => {
+    try {
+        const recipes = await getAllRecipes();
+        const reviews = await getAllRecipeReviews();
 
-export { addRecipe, getAllRecipes, getRecipeById, recipeSaved, getTrendingRecipes };
+        if (!recipes || recipes.length === 0) {
+            return [];
+        }
+
+        const recipeReviews = {};
+        reviews.forEach(review => {
+            if (!recipeReviews[review.recipeId]) {
+                recipeReviews[review.recipeId] = [];
+            }
+            recipeReviews[review.recipeId].push(review.rating);
+        });
+
+        const recipesWithAverageRating = recipes
+            .map(recipe => {
+                const recipeRating = recipeReviews[recipe.id];
+
+                if (recipeRating && recipeRating.length > 0) {
+                    const averageRating =
+                        recipeRating.reduce((sum, rating) => sum + rating, 0) / recipeRating.length;
+                    return {
+                        id: recipe.id,
+                        name: recipe.name,
+                        cuisine: recipe.cuisine,
+                        averageRating: averageRating.toFixed(2) // Format to 2 decimal places
+                    };
+                }
+
+                return null;
+            })
+            .filter(recipe => recipe !== null);
+           
+        recipesWithAverageRating.sort((a, b) => b.averageRating - a.averageRating);
+
+        const topRatedRecipes = recipesWithAverageRating.slice(0, 3);
+
+        if (topRatedRecipes.length < 3) {
+            const newRecipes = recipes
+                .filter(recipe => !topRatedRecipes.some(topRecipe => topRecipe.id === recipe.id))
+                .sort((a, b) => b.savedByUserIds.length - a.savedByUserIds.length);
+
+            while (topRatedRecipes.length < 3 && newRecipes.length > 0) {
+                const nextRecipe = newRecipes.shift();
+                topRatedRecipes.push({
+                    id: nextRecipe.id,
+                    name: nextRecipe.name,
+                    cuisine: nextRecipe.cuisine,
+                    averageRating: 'N/A'
+                });
+            }
+        }
+
+        return topRatedRecipes;
+    } catch {
+        return [];
+    }
+};
+
+
+export { addRecipe, getAllRecipes, getRecipeById, recipeSaved, getTopRatedRecipes };
