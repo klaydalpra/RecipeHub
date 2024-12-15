@@ -21,7 +21,7 @@ router.get('/', async (req, res) => {
           });
       }
 
-      res.status(200).render('shoppingList', { shoppingList });
+      return res.status(200).render('shoppingList', { shoppingList });
   } catch (e) {
       console.error('Error fetching shopping list:', e.message);
       res.status(500).render('error', { message: 'Failed to load shopping list.' });
