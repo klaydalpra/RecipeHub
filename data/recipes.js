@@ -1,5 +1,6 @@
 import {MongoClient, ObjectId} from 'mongodb';
 import { recipesCollection } from '../config/mongoCollections.js';
+import { reviewsCollection } from '../config/mongoCollections.js';
 import {closeConnection} from '../config/mongoConnections.js';
 import helperFunctions from '../helpers.js';
 
@@ -97,65 +98,76 @@ const recipeSaved = async (recipeId, userId) => {
 
 const getTopRatedRecipes = async () => {
     try {
-        const recipes = await getAllRecipes();
-        const reviews = await getAllRecipeReviews();
+        const recipesCol = await recipesCollection();
+        const reviewsCol = await reviewsCollection();
+
+        const recipes = await recipesCol.find({}).toArray();
+        const reviews = await reviewsCol.find({}).toArray();
 
         if (!recipes || recipes.length === 0) {
             return [];
         }
-
         const recipeReviews = {};
         reviews.forEach(review => {
-            if (!recipeReviews[review.recipeId]) {
-                recipeReviews[review.recipeId] = [];
+            const recipeId = review.recipeId.toString();
+            const rating = typeof review.rating === 'string' ? parseFloat(review.rating) : review.rating;
+
+            if (!recipeReviews[recipeId]) {
+                recipeReviews[recipeId] = [];
             }
-            recipeReviews[review.recipeId].push(review.rating);
+            recipeReviews[recipeId].push(rating);
         });
 
         const recipesWithAverageRating = recipes
             .map(recipe => {
-                const recipeRating = recipeReviews[recipe.id];
+                const recipeId = recipe._id.toString();
+                const recipeRating = recipeReviews[recipeId];
 
                 if (recipeRating && recipeRating.length > 0) {
-                    const averageRating =
-                        recipeRating.reduce((sum, rating) => sum + rating, 0) / recipeRating.length;
+                    const totalRating = recipeRating.reduce((sum, rating) => sum + rating, 0);
+                    const averageRating = totalRating / recipeRating.length;
                     return {
-                        id: recipe.id,
+                        _id: recipe._id.toString(),
                         name: recipe.name,
-                        cuisine: recipe.cuisine,
-                        averageRating: averageRating.toFixed(2) // Format to 2 decimal places
+                        cuisine: recipe.cuisine || 'Unknown',
+                        averageRating: averageRating.toFixed(2),
                     };
                 }
 
                 return null;
             })
             .filter(recipe => recipe !== null);
-           
+
+
         recipesWithAverageRating.sort((a, b) => b.averageRating - a.averageRating);
 
         const topRatedRecipes = recipesWithAverageRating.slice(0, 3);
 
         if (topRatedRecipes.length < 3) {
             const newRecipes = recipes
-                .filter(recipe => !topRatedRecipes.some(topRecipe => topRecipe.id === recipe.id))
-                .sort((a, b) => b.savedByUserIds.length - a.savedByUserIds.length);
+                .filter(recipe => !topRatedRecipes.some(topRecipe => topRecipe._id === recipe._id.toString()))
+                .sort((a, b) => (b.savedByUserIds?.length || 0) - (a.savedByUserIds?.length || 0));
 
             while (topRatedRecipes.length < 3 && newRecipes.length > 0) {
                 const nextRecipe = newRecipes.shift();
                 topRatedRecipes.push({
-                    id: nextRecipe.id,
+                    _id: nextRecipe._id.toString(),
                     name: nextRecipe.name,
-                    cuisine: nextRecipe.cuisine,
-                    averageRating: 'N/A'
+                    cuisine: nextRecipe.cuisine || 'Unknown',
+                    averageRating: 'N/A',
                 });
             }
         }
 
+        console.log('Top rated recipes:', topRatedRecipes);
         return topRatedRecipes;
-    } catch {
+    } catch (error) {
+        console.error('Error in getTopRatedRecipes:', error);
         return [];
     }
 };
+
+
 
 
 export { addRecipe, getAllRecipes, getRecipeById, recipeSaved, getTopRatedRecipes };
