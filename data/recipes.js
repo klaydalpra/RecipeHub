@@ -101,15 +101,12 @@ const getTopRatedRecipes = async () => {
         const recipesCol = await recipesCollection();
         const reviewsCol = await reviewsCollection();
 
-        // Fetch all recipes and reviews
         const recipes = await recipesCol.find({}).toArray();
         const reviews = await reviewsCol.find({}).toArray();
 
         if (!recipes || recipes.length === 0) {
             return [];
         }
-
-        // Map recipe IDs to their reviews
         const recipeReviews = {};
         reviews.forEach(review => {
             const recipeId = review.recipeId.toString();
@@ -121,7 +118,6 @@ const getTopRatedRecipes = async () => {
             recipeReviews[recipeId].push(rating);
         });
 
-        // Calculate average ratings for recipes
         const recipesWithAverageRating = recipes
             .map(recipe => {
                 const recipeId = recipe._id.toString();
@@ -134,7 +130,7 @@ const getTopRatedRecipes = async () => {
                         _id: recipe._id.toString(),
                         name: recipe.name,
                         cuisine: recipe.cuisine || 'Unknown',
-                        averageRating: averageRating.toFixed(2), // Format to 2 decimal places
+                        averageRating: averageRating.toFixed(2),
                     };
                 }
 
@@ -142,13 +138,11 @@ const getTopRatedRecipes = async () => {
             })
             .filter(recipe => recipe !== null);
 
-        // Sort by average rating
+
         recipesWithAverageRating.sort((a, b) => b.averageRating - a.averageRating);
 
-        // Get top 3 recipes
         const topRatedRecipes = recipesWithAverageRating.slice(0, 3);
 
-        // If fewer than 3 top-rated recipes, fill the remaining slots with popular recipes
         if (topRatedRecipes.length < 3) {
             const newRecipes = recipes
                 .filter(recipe => !topRatedRecipes.some(topRecipe => topRecipe._id === recipe._id.toString()))
