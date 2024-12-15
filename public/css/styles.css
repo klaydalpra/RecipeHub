@@ -38,7 +38,6 @@ h2 {
   background-color: #e0d2d2;
 }
 
-/* Delete button styles */
 #shoppingList button[name="deleteButton"] {
   background-color: #cc0000; 
   color: white;
@@ -52,7 +51,6 @@ h2 {
   background-color: #6e0000;
 }
 
-/* Measurement conversion styles */
 .measurement-form {
   display: flex;
   flex-direction: column;
@@ -111,7 +109,6 @@ h2 {
   font-size: 65%; 
 }
 
-/* Navigation links */
 a {
   color: #007bff;
   text-decoration: none;
@@ -155,11 +152,11 @@ a:hover {
     margin-bottom: 10px;
 }
 
-.review_text_container, .sign-in-input-container {
+.review_text_container, .sign-in-input-container, .create-recipe-container {
     margin-bottom: 20px;
 }
 
-.review_text_container label, .sign-in-input-container label {
+.review_text_container label, .sign-in-input-container label, .create-recipe-container label {
     font-weight: bold;
 }
 
@@ -175,11 +172,21 @@ a:hover {
     box-sizing: border-box;
 }
 
+.create-recipe-container input[type="text"] {
+    width: 50%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
 .review_rating_container {
     margin-top: 10px;
 }
 
-.review_rating_container select {
+.review_rating_container select, .create-recipe-container select {
+    width: 50%;
     margin-top: 5px;
     padding: 10px;
     border: 1px solid #ccc;

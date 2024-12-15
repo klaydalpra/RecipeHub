@@ -1,4 +1,4 @@
-<div id="userView">
+<div id="userView" class="recipe_container">
     <h1>Create a Recipe</h1>
 
     {{#if error}}
@@ -26,7 +26,8 @@
     {{/if}}
 
     {{#unless success}}
-    <form id="create-recipe-form" method="POST" action="/create-recipe">
+    <div class="create-recipe-container">
+        <form id="create-recipe-form" method="POST" action="/create-recipe">
 
         <label for="recipeName">Recipe Name:</label>
         <input type="text" id="recipeName" name="recipeName" placeholder="Enter recipe name" required>
@@ -41,6 +42,7 @@
                 <button type="button" class="remove-ingredient-button">Remove</button>
             </div>
         </div>
+        <br>
         <button type="button" id="add-ingredient-button">Add Another Ingredient</button>
         <br><br>
 
@@ -52,32 +54,29 @@
                 <button type="button" class="remove-instruction-button">Remove</button>
             </div>
         </div>
+        <br>
         <button type="button" id="add-instruction-button">Add Another Step</button>
         <br><br>
 
+        <label for="cuisines">Choose a cuisine:</label>
+        <select id="cuisines" name="cuisine" required>
+            <option value="italian">Italian</option>
+            <option value="chinese">Chinese</option>
+            <option value="indian">Indian</option>
+            <option value="mexican">Mexican</option>
+            <option value="japanese">Japanese</option>
+            <option value="french">French</option>
+            <option value="thai">Thai</option>
+            <option value="greek">Greek</option>
+            <option value="spanish">Spanish</option>
+            <option value="korean">Korean</option>
+            <option value="other">Other</option>
+        </select>
+        <br><br>
         <button type="submit" id="submit-recipe-button">Add Recipe</button>
-
-         <label for="cuisines">Choose a cuisine:</label>
-<select id="cuisines" name="cuisine" required>
-    <option value="italian">Italian</option>
-    <option value="chinese">Chinese</option>
-    <option value="indian">Indian</option>
-    <option value="mexican">Mexican</option>
-    <option value="japanese">Japanese</option>
-    <option value="french">French</option>
-    <option value="thai">Thai</option>
-    <option value="greek">Greek</option>
-    <option value="spanish">Spanish</option>
-    <option value="korean">Korean</option>
-    <option value="other">Other</option>
-</select>
-<br><br>
     </form>
     {{/unless}}
-
-    <br>
-
-    <a id="signoutLink" href="/signout">Sign out</a>
+    </div>
 </div>
 
 <script>
