@@ -12,6 +12,22 @@
         <p><strong>Registered On:</strong> {{userProfile.registeredDate}}</p>
     </div>
 
+    <div class="profile-container" id="user-saved-recipe">
+        <h2>Saved Recipes</h2>
+        {{#if savedRecipes.length}}
+            <ul>
+                {{#each savedRecipes}}
+                    <li>
+                        <a href="/recipe/{{this._id}}">{{this.name}}</a>
+                    </li>
+                    <br>
+                {{/each}}
+            </ul>
+        {{else}}
+            <p>No saved recipes yet.</p>
+        {{/if}}
+    </div>
+
     <div class="profile-container" id="profile-reviews">
         <h2>Reviews</h2>
         {{#if userProfile.reviewIds.length}}
@@ -20,6 +36,7 @@
                     <li>
                         <a href="/review/{{this}}">Review ID: {{this}}</a>
                     </li>
+                    <br>
                 {{/each}}
             </ul>
         {{else}}
@@ -44,6 +61,7 @@
             {{/if}}
         </div>
     {{/if}}
+
     {{#unless isOwnProfile}}
         <div class="profile-container" id="profile-actions">
             {{#if isFollowing}}

@@ -204,7 +204,14 @@ const getRecipesByUserId = async (userId, limit = 2) => {
     }));
 };
 
+const getRecipesByIds = async (recipeIds) => {
+    if (!Array.isArray(recipeIds)) throw new Error('Invalid recipe IDs array.');
 
+    const recipesCol = await recipesCollection();
+    const objectIdArray = recipeIds.map(id => new ObjectId(id));
+    const recipes = await recipesCol.find({ _id: { $in: objectIdArray } }).toArray();
 
+    return recipes;
+};
 
-export { addRecipe, getAllRecipes, getRecipeById, recipeSaved, getTopRatedRecipes,getRecipesByUserId };
+export { addRecipe, getAllRecipes, getRecipeById, recipeSaved, getTopRatedRecipes,getRecipesByUserId, getRecipesByIds };

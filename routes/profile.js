@@ -10,6 +10,7 @@ router.get('/', ensureAuthenticated, async (req, res) => {
     try {
         const userId = req.session.user.id;
         const userProfile = await userData.getUserById(userId);
+        const savedRecipes = await recipeData.getRecipesByIds(userProfile.savedRecipeIds);
 
         let followingRecipes = [];
 
@@ -36,6 +37,7 @@ router.get('/', ensureAuthenticated, async (req, res) => {
             isOwnProfile: true,
             title: `${userProfile.firstName} ${userProfile.lastName}'s Profile`,
             followingRecipes,
+            savedRecipes
         });
     } catch (error) {
         console.error(`Error loading profile: ${error.message}`);
@@ -67,6 +69,7 @@ router.get('/:userId', async (req, res) => {
     try {
         const userProfile = await userData.getUserById(userId);
         const isOwnProfile = currentUser ? currentUser.id === userId : false;
+        const savedRecipes = await recipeData.getRecipesByIds(userProfile.savedRecipeIds);
 
         let followingRecipes = [];
         let isFollowing = false;
@@ -100,7 +103,8 @@ router.get('/:userId', async (req, res) => {
             userProfile,
             isOwnProfile,
             followingRecipes,
-            isFollowing
+            isFollowing,
+            savedRecipes
         });
     } catch (error) {
         console.error(`Error fetching profile: ${error.message}`);
