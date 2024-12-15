@@ -239,7 +239,7 @@ a:hover {
 
 }
 
-.measurement-container ul, .trending-container ul {
+.measurement-container ul, .trending-container ul, .profile-container ul {
   list-style-type: none;
 }
 
@@ -250,6 +250,24 @@ a:hover {
   border: 1px solid #ccc;
   border-radius: 4px;
   background: #f9f9f9;
+}
+
+.profile-container {
+  text-align: left;
+  max-width: 800px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+#profile-actions {
+  text-align: center;
+}
+
+#profile-actions button[type="submit"] {
+  width: 100%;
 }
 
 button[type="submit"] {
