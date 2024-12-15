@@ -24,14 +24,12 @@
 <div class="review_container">
   <form id="add-review-form" name="add-review-form" method="POST" action="/recipe/{{recipe._id}}/review">
     <div class="review_text_container">
-      <!-- Review Text -->
       <label for="reviewText">Review:</label>
       <input type="text" id="reviewText" name="reviewText" placeholder="Leave a review..." required>
       <br><br>
-
-      <!-- Rating -->
       <div class="review_rating_container">
         <label for="rating">Rating:</label>
+        <br>
         <select id="rating" name="rating">
           <option value="">Please choose a rating</option>
           <option value="1">1</option>
@@ -47,9 +45,6 @@
         </select>
       </div>
     </div>
-    <br><br>
-
-    <!-- Submit Button -->
     <button type="submit" id="submit-review-button" name="submit-review-button">Add Review</button>
   </form>
 </div>

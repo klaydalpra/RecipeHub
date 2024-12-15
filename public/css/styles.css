@@ -122,7 +122,7 @@ a:hover {
   color: #0056b3;
 }
 
-.recipe_container, .recipe_reviews_container {
+.recipe_container, .recipe_reviews_container, .review_container, .sign-in-container {
     max-width: 800px;
     margin: 20px auto;
     padding: 20px;
@@ -139,25 +139,18 @@ a:hover {
     margin-bottom: 10px;
 }
 
-/* Review Form Styles */
-.review_container {
-    max-width: 800px;
-    margin: 20px auto;
-    padding: 20px;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.review_text_container {
+.review_text_container, .sign-in-input-container {
     margin-bottom: 20px;
 }
 
-.review_text_container label {
+.review_text_container label, .sign-in-input-container label {
     font-weight: bold;
 }
 
-.review_text_container input[type="text"] {
+.review_text_container input[type="text"], 
+.sign-in-input-container input[type="text"], 
+.sign-in-input-container input[type="password"], 
+.sign-in-input-container input[type="email"] {
     width: 100%;
     padding: 10px;
     margin-top: 5px;
@@ -171,6 +164,7 @@ a:hover {
 }
 
 .review_rating_container select {
+    margin-top: 5px;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
@@ -205,7 +199,6 @@ button[type="button"]:hover, button[type="reset"]:hover {
   background-color: #b1b1b1;
 }
 
-/* Review List */
 .review_list {
     list-style-type: none;
     padding: 0;
@@ -251,4 +244,8 @@ button[type="button"]:hover, button[type="reset"]:hover {
 
 .comment_container button[type="submit"] {
     margin-left: 10px;
+}
+
+footer {
+  text-align: center;
 }
