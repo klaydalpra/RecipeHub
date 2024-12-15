@@ -13,9 +13,10 @@ router.get('/', (req, res) => {
 });
 router.post('/', async (req, res) => {
     try {
-        const { recipeName, ingredientName, ingredientAmount, instructions } = req.body;
+        const { recipeName, ingredientName, ingredientAmount, instructions, cuisine } = req.body;
+        console.log(req.body);
 
-        // Validate recipeName
+        // Validate recipe name
         if (!recipeName || typeof recipeName !== 'string' || recipeName.trim().length === 0) {
             throw new Error('Recipe name is required.');
         }
@@ -25,7 +26,6 @@ router.post('/', async (req, res) => {
             throw new Error('Ingredients and their amounts must be provided.');
         }
 
-        // Construct the ingredients object
         const ingredients = {};
         ingredientName.forEach((name, index) => {
             if (!name.trim() || !ingredientAmount[index].trim()) {
@@ -39,8 +39,18 @@ router.post('/', async (req, res) => {
             throw new Error('Instructions must be a non-empty array of strings.');
         }
 
+        // Validate cuisines
+        if (!cuisine || typeof cuisine !== 'string' || cuisine.trim().length === 0) {
+            throw new Error('cuisines is required.');
+        }
+
         // Add recipe to the database
-        const newRecipe = await recipeData.addRecipe(recipeName.trim(), ingredients, instructions.map((step) => step.trim()));
+        const newRecipe = await recipeData.addRecipe(
+            recipeName.trim(),
+            ingredients,
+            instructions.map((step) => step.trim()),
+            cuisine.trim() // Pass the cuisines
+        );
 
         // Redirect to the recipe details page
         res.redirect(`/recipe/${newRecipe._id}`);

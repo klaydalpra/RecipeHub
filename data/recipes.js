@@ -25,7 +25,7 @@ const addRecipe = async (name, ingredients, instructions, dateMade) => {
     return { _id: recipeId, ...newRecipe };
 }
     */
-   const addRecipe = async (name, ingredients, instructions) => {
+   const addRecipe = async (name, ingredients, instructions, cuisine) => {
     if (!name || typeof name !== 'string' || name.trim().length === 0) {
         throw new Error('Recipe name is required.');
     }
@@ -37,14 +37,24 @@ const addRecipe = async (name, ingredients, instructions, dateMade) => {
     if (!Array.isArray(instructions) || instructions.length === 0 || instructions.some((step) => typeof step !== 'string')) {
         throw new Error('Instructions must be a non-empty array of strings.');
     }
+    if (!cuisine || typeof cuisine !== 'string' || cuisine.trim().length === 0) {
+        throw new Error('Cuisine is required.');
+    }
+
+
+    const postedDate = new Date().toISOString();
 
     const newRecipe = {
         name: name.trim(),
         ingredients,
         instructions,
+        cuisine: cuisine.trim(),
+        postedDate,
         reviewIds: [],
         savedByUserIds: [],
     };
+
+    console.log(newRecipe.postedDate);
 
     const recipesCol = await recipesCollection();
     const insertResult = await recipesCol.insertOne(newRecipe);
@@ -124,6 +134,11 @@ const getTopRatedRecipes = async () => {
                 const recipeRating = recipeReviews[recipeId];
 
                 if (recipeRating && recipeRating.length > 0) {
+                    const formattedDate = new Date(recipe.postedDate).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                    });
                     const totalRating = recipeRating.reduce((sum, rating) => sum + rating, 0);
                     const averageRating = totalRating / recipeRating.length;
                     return {
@@ -131,6 +146,7 @@ const getTopRatedRecipes = async () => {
                         name: recipe.name,
                         cuisine: recipe.cuisine || 'Unknown',
                         averageRating: averageRating.toFixed(2),
+                        postedDate: formattedDate
                     };
                 }
 
@@ -155,6 +171,7 @@ const getTopRatedRecipes = async () => {
                     name: nextRecipe.name,
                     cuisine: nextRecipe.cuisine || 'Unknown',
                     averageRating: 'N/A',
+                    postedDate: nextRecipe.postedDate
                 });
             }
         }

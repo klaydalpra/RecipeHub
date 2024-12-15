@@ -56,10 +56,27 @@
         <br><br>
 
         <button type="submit" id="submit-recipe-button">Add Recipe</button>
+
+         <label for="cuisines">Choose a cuisine:</label>
+<select id="cuisines" name="cuisine" required>
+    <option value="italian">Italian</option>
+    <option value="chinese">Chinese</option>
+    <option value="indian">Indian</option>
+    <option value="mexican">Mexican</option>
+    <option value="japanese">Japanese</option>
+    <option value="french">French</option>
+    <option value="thai">Thai</option>
+    <option value="greek">Greek</option>
+    <option value="spanish">Spanish</option>
+    <option value="korean">Korean</option>
+    <option value="other">Other</option>
+</select>
+<br><br>
     </form>
     {{/unless}}
 
     <br>
+
     <a id="signoutLink" href="/signout">Sign out</a>
 </div>
 
