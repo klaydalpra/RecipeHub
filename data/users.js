@@ -95,6 +95,7 @@ export const getUserById = async (id) => {
     if (!user) throw new Error(`Could not find user with ID: ${id}`);
 
     user._id = user._id.toString();
+    console.log(user);
     return user;
 };
 
@@ -135,6 +136,53 @@ export const saveRecipe = async (recipeId, userId) => {
     await recipeData.recipeSaved(recipeId, userId);
 
     return updatedUser;
+};
+
+
+export const followUser = async (userId, profileId) => {
+    const usersCol = await usersCollection();
+
+    const user = await usersCol.findOne({ _id: new ObjectId(userId) });
+    if (user.followingUserIds && user.followingUserIds.includes(profileId)) {
+        throw new Error("You are already following this user.");
+    }
+
+    console.log("userId: ", userId);
+    const updateResult = await usersCol.updateOne(
+        { _id: new ObjectId(userId) },
+        { $addToSet: { followingUserIds: profileId } }
+    );
+
+    if (!updateResult.modifiedCount) {
+        throw new Error("Could not follow user.");
+    }
+
+    return true;
+};
+
+
+export const updateUser = async (userId, updateData) => {
+    if (!userId || typeof userId !== 'string' || userId.trim().length === 0) {
+        throw new Error('User ID must be a non-empty string.');
+    }
+
+    if (!ObjectId.isValid(userId)) {
+        throw new Error('Invalid User ID format.');
+    }
+
+    const usersCol = await usersCollection();
+
+
+    const result = await usersCol.updateOne(
+        { _id: new ObjectId(userId) },
+        updateData
+    );
+
+    if (result.matchedCount === 0) {
+        throw new Error(`User with ID ${userId} not found.`);
+    }
+
+    return result;
 };
 
 export const closeDbConnection = async () => {

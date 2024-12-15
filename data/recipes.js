@@ -178,8 +178,6 @@ const getTopRatedRecipes = async () => {
                 });
             }
         }
-
-        console.log('Top rated recipes:', topRatedRecipes);
         return topRatedRecipes;
     } catch (error) {
         console.error('Error in getTopRatedRecipes:', error);
@@ -188,6 +186,25 @@ const getTopRatedRecipes = async () => {
 };
 
 
+const getRecipesByUserId = async (userId, limit = 2) => {
+    userId = helperFunctions.checkId(userId);
+    console.log("following : " + userId);
+
+    const recipesCol = await recipesCollection();
+    const recipes = await recipesCol
+        .find({ author: userId })
+        .sort({ postedDate: -1 })
+        .limit(limit)
+        .toArray();
+
+    return recipes.map(recipe => ({
+        _id: recipe._id.toString(),
+        name: recipe.name,
+        author: recipe.author,
+    }));
+};
 
 
-export { addRecipe, getAllRecipes, getRecipeById, recipeSaved, getTopRatedRecipes };
+
+
+export { addRecipe, getAllRecipes, getRecipeById, recipeSaved, getTopRatedRecipes,getRecipesByUserId };
