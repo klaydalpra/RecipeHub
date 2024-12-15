@@ -4,18 +4,18 @@
     <h2>Profile Information</h2>
 
     {{#if isOwnProfile}}
-        <p><strong>Email:</strong> {{user.email}}</p>
+        <p><strong>Email:</strong> {{userProfile.email}}</p>
     {{/if}}
 
-    <p><strong>Username:</strong> {{user.userId}}</p>
-    <p><strong>Registered On:</strong> {{user.registeredDate}}</p>
+    <p><strong>Username:</strong> {{userProfile.userId}}</p>
+    <p><strong>Registered On:</strong> {{userProfile.registeredDate}}</p>
 </section>
 
 <section id="user-reviews">
     <h2>Reviews</h2>
-    {{#if user.reviewIds.length}}
+    {{#if userProfile.reviewIds.length}}
         <ul>
-            {{#each user.reviewIds}}
+            {{#each userProfile.reviewIds}}
                 <li>
                     <a href="/review/{{this}}">Review ID: {{this}}</a>
                 </li>
