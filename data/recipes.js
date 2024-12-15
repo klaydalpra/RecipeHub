@@ -25,7 +25,7 @@ const addRecipe = async (name, ingredients, instructions, dateMade) => {
     return { _id: recipeId, ...newRecipe };
 }
     */
-   const addRecipe = async (name, ingredients, instructions, cuisine) => {
+   const addRecipe = async (name, ingredients, instructions, cuisine, authorId) => {
     if (!name || typeof name !== 'string' || name.trim().length === 0) {
         throw new Error('Recipe name is required.');
     }
@@ -44,6 +44,8 @@ const addRecipe = async (name, ingredients, instructions, dateMade) => {
 
     const postedDate = new Date().toISOString();
 
+ 
+
     const newRecipe = {
         name: name.trim(),
         ingredients,
@@ -52,6 +54,7 @@ const addRecipe = async (name, ingredients, instructions, dateMade) => {
         postedDate,
         reviewIds: [],
         savedByUserIds: [],
+        author: authorId
     };
 
     console.log(newRecipe.postedDate);

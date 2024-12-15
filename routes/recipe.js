@@ -18,6 +18,7 @@ router.get('/:recipeId', async (req, res) => {
     try {
         const recipe = await recipeData.getRecipeById(recipeId);
         const reviews = await reviewData.getAllRecipeReviews(recipeId);
+        const author = await userData.getUserById2(recipe.author);
 
         const formattedDate = new Date(recipe.postedDate).toLocaleDateString('en-US', {
             year: 'numeric',
@@ -26,7 +27,7 @@ router.get('/:recipeId', async (req, res) => {
         });
         
 
-        res.render('recipe', { recipe, reviews, user,formattedDate });
+        res.render('recipe', { recipe, reviews, user,formattedDate, author });
     } catch (e) {
         console.error(`Error fetching recipe or reviews: ${e.message}`);
         return res.status(404).render('error.handlebars', {message: e});

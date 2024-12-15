@@ -98,6 +98,16 @@ export const getUserById = async (id) => {
     return user;
 };
 
+export const getUserById2 = async (id) => {
+    helperFunctions.checkId(id);
+    const usersCol = await usersCollection();
+    const user = await usersCol.findOne({ _id: new ObjectId(id) });
+    if (!user) throw new Error(`Could not find user with ID: ${id}`);
+
+    const name = user.userId.toString();
+    return name;
+};
+
 export const saveRecipe = async (recipeId, userId) => {
     helperFunctions.checkId(recipeId);
     helperFunctions.checkId(userId);
