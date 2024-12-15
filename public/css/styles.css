@@ -1,0 +1,254 @@
+/* General styles */
+body {
+  font-family: sans-serif;
+  margin: 0;
+  padding: 20px;
+}
+
+h2 {
+  margin-bottom: 10px;
+}
+
+/* Shopping list styles */
+.shoppingListDisplay-form {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+#shoppingList {
+  border: 1px solid #facccc;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+#shoppingList table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+#shoppingList th,
+#shoppingList td {
+  padding: 5px;
+  border: 1px solid #facccc;;
+  text-align: left;
+}
+
+#shoppingList th {
+  background-color: #e0d2d2;
+}
+
+/* Delete button styles */
+#shoppingList button[name="deleteButton"] {
+  background-color: #cc0000; 
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#shoppingList button[name="deleteButton"]:hover {
+  background-color: #6e0000;
+}
+
+/* Measurement conversion styles */
+.measurement-form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.measurementConversion {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.measurementConversion label {
+  display: inline-block;
+  margin-right: 10px;
+  font-size: 75%; 
+}
+
+.measurementConversion input[type="text"]::placeholder {
+  font-size: 80%; 
+  color: #999; 
+}
+
+.measurementConversion select,
+.measurementConversion input[type="text"] {
+  padding: 5px;
+  border: 1px solid #facccc;
+  border-radius: 3px;
+  font-size: 75%; 
+}
+
+.measurementConversion button {
+  background-color: #63c266;
+  color: white;
+  padding: 7px 17px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.measurementConversion button:hover {
+  background-color: #3a8d3c;
+}
+
+.measurementConversion .conversionResults {
+  flex-grow: 1;
+  padding: 5px;
+  border: 1px solid #facccc;
+  border-radius: 3px;
+  font-size: 75%;
+}
+#conversionResults {
+    font-size: 85%; 
+}
+#disclaimer {
+  font-size: 65%; 
+}
+
+/* Navigation links */
+a {
+  color: #007bff;
+  text-decoration: none;
+  margin-right: 10px;
+}
+
+a:hover {
+  color: #0056b3;
+}
+
+.recipe_container, .recipe_reviews_container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.recipe_ingredients_list, .recipe_instructions_list {
+    margin-left: 20px;
+}
+
+.recipe_ingredients_list li, .recipe_instructions_list li {
+    margin-bottom: 10px;
+}
+
+/* Review Form Styles */
+.review_container {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.review_text_container {
+    margin-bottom: 20px;
+}
+
+.review_text_container label {
+    font-weight: bold;
+}
+
+.review_text_container input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin-top: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.review_rating_container {
+    margin-top: 10px;
+}
+
+.review_rating_container select {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #f9f9f9;
+}
+
+button[type="submit"] {
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+button[type="button"], button[type="reset"] {
+  background-color: #f1f1f1;
+  color: #000000;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button[type="button"]:hover, button[type="reset"]:hover {
+  background-color: #b1b1b1;
+}
+
+/* Review List */
+.review_list {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 10px;
+}
+
+.review_list li {
+    margin-bottom: 5px;
+    padding: 5px 10px;
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+.comment_container {
+    margin-top: 10px;
+    padding-left: 20px;
+    border-left: 2px solid #ccc;
+}
+
+.comment_list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.comment_list li {
+    margin-bottom: 5px;
+    padding: 5px 10px;
+    background: #e9e9e9;
+    border-radius: 4px;
+}
+
+.comment_container form {
+    margin-top: 10px;
+}
+
+.comment_container input[type="text"] {
+    width: calc(100% - 120px);
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.comment_container button[type="submit"] {
+    margin-left: 10px;
+}

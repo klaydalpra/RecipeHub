@@ -27,31 +27,34 @@
 
     {{#unless success}}
     <form id="create-recipe-form" method="POST" action="/create-recipe">
-        <!-- Recipe Name -->
+
         <label for="recipeName">Recipe Name:</label>
         <input type="text" id="recipeName" name="recipeName" placeholder="Enter recipe name" required>
         <br><br>
 
-        <!-- Ingredients Section -->
+
         <label for="ingredients">Ingredients:</label>
         <div id="ingredients-container">
             <div class="ingredient-item">
                 <input type="text" name="ingredientName[]" placeholder="Enter ingredient name" required>
                 <input type="text" name="ingredientAmount[]" placeholder="Enter amount (e.g., '2 cups')" required>
+                <button type="button" class="remove-ingredient-button">Remove</button>
             </div>
         </div>
         <button type="button" id="add-ingredient-button">Add Another Ingredient</button>
         <br><br>
 
-        <!-- Instructions Section -->
+
         <label for="instructions">Instructions:</label>
         <div id="instructions-container">
-            <input type="text" name="instructions[]" placeholder="Enter a step" required>
+            <div class="instruction-item">
+                <input type="text" name="instructions[]" placeholder="Enter a step" required>
+                <button type="button" class="remove-instruction-button">Remove</button>
+            </div>
         </div>
         <button type="button" id="add-instruction-button">Add Another Step</button>
         <br><br>
 
-        <!-- Submit Button -->
         <button type="submit" id="submit-recipe-button">Add Recipe</button>
     </form>
     {{/unless}}
@@ -61,7 +64,6 @@
 </div>
 
 <script>
-    // Add another ingredient input pair
     document.getElementById('add-ingredient-button').addEventListener('click', () => {
         const container = document.getElementById('ingredients-container');
         const newDiv = document.createElement('div');
@@ -69,18 +71,34 @@
         newDiv.innerHTML = `
             <input type="text" name="ingredientName[]" placeholder="Enter ingredient name" required>
             <input type="text" name="ingredientAmount[]" placeholder="Enter amount (e.g., '2 cups')" required>
+            <button type="button" class="remove-ingredient-button">Remove</button>
         `;
         container.appendChild(newDiv);
     });
 
-    // Add another instruction input
+
     document.getElementById('add-instruction-button').addEventListener('click', () => {
         const container = document.getElementById('instructions-container');
-        const newInput = document.createElement('input');
-        newInput.type = 'text';
-        newInput.name = 'instructions[]';
-        newInput.placeholder = 'Enter a step';
-        newInput.required = true;
-        container.appendChild(newInput);
+        const newDiv = document.createElement('div');
+        newDiv.classList.add('instruction-item');
+        newDiv.innerHTML = `
+            <input type="text" name="instructions[]" placeholder="Enter a step" required>
+            <button type="button" class="remove-instruction-button">Remove</button>
+        `;
+        container.appendChild(newDiv);
+    });
+
+
+    document.getElementById('ingredients-container').addEventListener('click', (event) => {
+        if (event.target.classList.contains('remove-ingredient-button')) {
+            event.target.parentElement.remove();
+        }
+    });
+
+
+    document.getElementById('instructions-container').addEventListener('click', (event) => {
+        if (event.target.classList.contains('remove-instruction-button')) {
+            event.target.parentElement.remove();
+        }
     });
 </script>

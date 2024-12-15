@@ -9,6 +9,7 @@ import shoppingRoute from './shoppingList.js';
 import searchRoute from './searchrecipe.js';
 import signUpRoute from './signupuser.js';
 import signOutRoute from './signout.js';
+import reviewRoute from './review.js';
 
 const constructorMethod = (app) => {
   app.use('/login', loginRoutes);
@@ -22,6 +23,7 @@ const constructorMethod = (app) => {
   app.use('/signupuser', signUpRoute);
   app.use('/signinuser', loginRoutes);
   app.use('/signout', signOutRoute);
+  app.use('/review', reviewRoute);
 
   app.get('/', (req, res) => {
     res.redirect('/home');
