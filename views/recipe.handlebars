@@ -2,7 +2,7 @@
   <h1>{{ recipe.name }}</h1>
   <p hidden>{{ recipe._id }}</p>
   <p>Posted on {{formattedDate}}</p>
-  <p>By: {{author}}</p>
+  <p>By: <a href="/profile/{{recipe.author}}">{{author}}</a></p>
   <h2>Ingredients</h2>
     <ul class="recipe_ingredients_list">
       {{#each recipe.ingredients}}
