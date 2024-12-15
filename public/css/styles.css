@@ -147,7 +147,10 @@ a:hover {
     font-weight: bold;
 }
 
-.review_text_container input[type="text"], .sign-in-input-container input[type="text"], .sign-in-input-container input[type="password"] {
+.review_text_container input[type="text"], 
+.sign-in-input-container input[type="text"], 
+.sign-in-input-container input[type="password"], 
+.sign-in-input-container input[type="email"] {
     width: 100%;
     padding: 10px;
     margin-top: 5px;
