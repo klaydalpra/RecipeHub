@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getTrendingRecipes } from '../data/recipes.js';
+import { getTopRatedRecipes } from '../data/recipes.js';
 const router = Router();
 
 router.get('/', async (req, res) => {
