@@ -533,7 +533,7 @@ if (measurementForm) {
         else if (!mAmount){
             let li = document.createElement('li');
             li.classList.add('error');
-            li.innerHTML = `Could not convert ${amount}${initialUnit} to ${newUnit}, amount input not valid. Please enter a valid amount (ex: 1.1, 2, 1/4...).`;
+            li.innerHTML = `Could not convert ${amount} ${initialUnit} to ${newUnit}, amount input not valid. Please enter a valid amount (ex: 1.1, 2, 1/4...).`;
             myUl.appendChild(li);
             measurementForm.reset();
         }
@@ -549,7 +549,7 @@ if (measurementForm) {
             let li = document.createElement('li');
             measurementForm.reset();
             let convertedNum = convertMeasurements(mAmount, initialUnit, newUnit);
-            li.innerHTML = `${amount}${initialUnit} converted to ${newUnit} is ${convertedNum.toFixed(2)}${newUnit}.`;
+            li.innerHTML = `${amount} ${initialUnit} converted to ${newUnit} is ${convertedNum.toFixed(2)} ${newUnit}.`;
             myUl.appendChild(li);
             measurementForm.reset();
         }

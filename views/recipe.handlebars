@@ -3,12 +3,18 @@
   <p hidden>{{ recipe._id }}</p>
   <p>Posted on {{formattedDate}}</p>
   <p>By: <a href="/profile/{{recipe.author}}">{{author}}</a></p>
+  <form id="save-review-form" method="POST" action="/recipe/{{recipe._id}}/save" name="save-review-form" type="button">
+    <button class="add-comment-button" name="add-comment-button" type="submit">Save Recipe</button>
+  </form>
   <h2>Ingredients</h2>
-    <ul class="recipe_ingredients_list">
-      {{#each recipe.ingredients}}
-        <li>{{this}} {{@key}}</li>
-      {{/each}}
-    </ul>
+  <ul class="recipe_ingredients_list">
+    {{#each recipe.ingredients}}
+      <li>{{this}} {{@key}}</li>
+    {{/each}}
+  </ul>
+  <form id="shoppingList-form" class="shoppingList-form" action="/shopping-list/{{recipe._id}}" method="POST" >
+    <button type="submit" id="submitButton" name="submitButton">Add to Shopping List</button>
+  </form>
   <h2>Instructions</h2>
   <ol class="recipe_instructions_list">
     {{#each recipe.instructions}}
@@ -16,9 +22,6 @@
     {{/each}}
   </ol>
   {{#if user}}
-  <form id="save-review-form" method="POST" action="/recipe/{{recipe._id}}/save" name="save-review-form" type="button">
-    <button class="add-comment-button" name="add-comment-button" type="submit">Save Recipe</button>
-  </form>
   {{/if}}
 </div>
 
@@ -87,59 +90,55 @@
   </div>
 {{/if}}
 
-<form id="measurement-form" class="measurement-form" >
-<div class="measurementConversion">
-    <label for="amount">Amount:</label>
-    <input type="text" id="amount" name="amount"placeholder="Convert Measurements Here">
+<div class="measurement-container">
+  <h2>Measurement Conversion Helper</h2>
+  <div class="measurement-input-container">
+    <form id="measurement-form">
+      <label for="amount">Amount:</label>
+      <input type="text" id="amount" name="amount" placeholder="Convert Measurements Here">
 
-    <label for="fromUnit">From Unit:</label>
-    <select id="fromUnit" name="fromUnit">
-      <option value="tbsp">tbsp</option>
-      <option value="tsp">tsp</option>
-      <option value="oz">oz</option>
-      <option value="grams">grams</option>
-      <option value="floz">floz</option>
-      <option value="lb">lb</option>
-      <option value="pints">pints</option>
-      <option value="quarts">quarts</option>
-      <option value="gallons">gallons</option>
-      <option value="ml">ml</option>
-      <option value="cups">cups</option>
-      <option value="kg">kg</option>
-      <option value="liters">liters</option>
-    </select>
+      <label for="fromUnit">From:</label>
+      <select id="fromUnit" name="fromUnit">
+        <option value="tbsp">tbsp</option>
+        <option value="tsp">tsp</option>
+        <option value="oz">oz</option>
+        <option value="grams">grams</option>
+        <option value="floz">floz</option>
+        <option value="lb">lb</option>
+        <option value="pints">pints</option>
+        <option value="quarts">quarts</option>
+        <option value="gallons">gallons</option>
+        <option value="ml">ml</option>
+        <option value="cups">cups</option>
+        <option value="kg">kg</option>
+        <option value="liters">liters</option>
+      </select>
 
-    <label for="toUnit">To Unit:</label>
-    <select id="toUnit" name="toUnit">
-      <option value="tbsp">tbsp</option>
-      <option value="tsp">tsp</option>
-      <option value="oz">oz</option>
-      <option value="grams">grams</option>
-      <option value="floz">floz</option>
-      <option value="lb">lb</option>
-      <option value="pints">pints</option>
-      <option value="quarts">quarts</option>
-      <option value="gallons">gallons</option>
-      <option value="ml">ml</option>
-      <option value="cups">cups</option>
-      <option value="kg">kg</option>
-      <option value="liters">liters</option>
-    </select>
+      <label for="toUnit">To:</label>
+      <select id="toUnit" name="toUnit">
+        <option value="tbsp">tbsp</option>
+        <option value="tsp">tsp</option>
+        <option value="oz">oz</option>
+        <option value="grams">grams</option>
+        <option value="floz">floz</option>
+        <option value="lb">lb</option>
+        <option value="pints">pints</option>
+        <option value="quarts">quarts</option>
+        <option value="gallons">gallons</option>
+        <option value="ml">ml</option>
+        <option value="cups">cups</option>
+        <option value="kg">kg</option>
+        <option value="liters">liters</option>
+      </select>
 
-    <button type="submit">Convert</button>
+      <button type="submit">Convert</button>
+    </form>
+  </div>
+  <ul id="conversionResults"> </ul>
+  <p id="disclaimer">Discaimer: This website uses a single standardized density of an average taken from multiple different types of flour. 
+    Volume to Mass (ex tbsp to grams) or Mass to Volume Measurements use denisty to convert so they are close approximations.
+    All other measurements are 100% accurate!</p>
 </div>
-</form>
-<p id="disclaimer">Discaimer: This website uses a single standardized density of an average taken from multiple different types of flour. 
-  Volume to Mass (ex tbsp to grams) or Mass to Volume Measurements use denisty to convert so they are close approximations.
-  All other measurements are 100% accurate!</p>
-<ul id="conversionResults"> </ul>
 
-<form id="shoppingList-form" class="shoppingList-form" action="/shopping-list/{{recipe._id}}" method="POST" >
-<div>
-      <button type="submit" id="submitButton" name="submitButton">Add to Shopping List</button>
-    </div>
-</form>
-
-<a href="/shopping-list">View Shopping List</a>
 <script src="/public/js/recipe.js"></script>
 <script src='/public/js/measurementConversion.js'></script>
