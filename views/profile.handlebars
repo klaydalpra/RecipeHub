@@ -1,5 +1,3 @@
-
-
 <section id="profile-info">
     <h2>Profile Information</h2>
 
@@ -26,6 +24,24 @@
     {{/if}}
 </section>
 
+<section id="following-recipes">
+    {{#if isOwnProfile}}
+        <h2>Recent Recipes from People You Follow</h2>
+        {{#if followingRecipes.length}}
+            <ul>
+                {{#each followingRecipes}}
+                    <li>
+                        <a href="/recipe/{{this._id}}">{{this.name}}</a>
+                        <p><strong>By:</strong> {{this.authorName}}</p>
+                    </li>
+                {{/each}}
+            </ul>
+        {{else}}
+            <p>You are not following anyone or no recipes found.</p>
+        {{/if}}
+    {{/if}}
+</section>
+
 <section id="profile-actions">
     {{#if isOwnProfile}}
         <h2>Actions</h2>
@@ -33,5 +49,40 @@
             <li><a href="/edit-profile">Edit Profile</a></li>
             <li><a href="/signout">Sign Out</a></li>
         </ul>
+    {{else}}
+        {{#if isFollowing}}
+            <form id="unfollow-form" action="/profile/unfollow/{{userProfile._id}}" method="POST">
+                <button type="submit" id="unfollow-button">Unfollow</button>
+            </form>
+        {{else}}
+            <form id="follow-form" action="/profile/follow/{{userProfile._id}}" method="POST">
+                <button type="submit" id="follow-button">Follow</button>
+            </form>
+        {{/if}}
     {{/if}}
 </section>
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const followForm = document.getElementById('follow-form');
+        const unfollowForm = document.getElementById('unfollow-form');
+
+        if (followForm) {
+            followForm.addEventListener('submit', function (event) {
+                event.preventDefault();
+                alert('You are now following this user.');
+                followForm.submit();
+            });
+        }
+
+        if (unfollowForm) {
+            unfollowForm.addEventListener('submit', function (event) {
+                event.preventDefault();
+                alert('You are no longer following this user.');
+                unfollowForm.submit();
+            });
+        }
+    });
+</script>

@@ -24,6 +24,8 @@ const constructorMethod = (app) => {
   app.use('/signinuser', loginRoutes);
   app.use('/signout', signOutRoute);
   app.use('/review', reviewRoute);
+  app.use('/follow', profileRoute);
+  app.use('/unfollow', profileRoute);
 
   app.get('/', (req, res) => {
     res.redirect('/home');

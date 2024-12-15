@@ -15,7 +15,7 @@ router.post('/', async (req, res) => {
     req.session.user = authUser;
     res.redirect('/home');
   } catch (error) {
-    res.status(400).render('login', { error: error.message });
+    res.status(400).render('signinuser', { error: error.message });
   }
 });
 
