@@ -21,7 +21,7 @@
               <h2>Matching Recipes</h2>
                 {{#each recipes}}
                     <li>
-                        <h3><a href="/{{this._id}}">{{this.name}}</a></h3>
+                        <h3><a href="/recipe/{{this._id}}">{{this.name}}</a></h3>
                         {{#if ../selectedFilter}}
                           {{#if (eq ../selectedFilter "dietary")}}
                            <p><strong>Dietary Needs:</strong> {{this.dietary}}</p>
