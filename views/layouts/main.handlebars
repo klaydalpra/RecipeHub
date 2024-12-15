@@ -11,16 +11,27 @@
 <body>
   <header>
     <nav class="nav-container">
-  <h1>Recipe Hub</h1>
-  {{#if user}}
-    <a href="/profile">Profile</a>
-    <a href="/signout">Sign Out</a>
-    <a href="/create-recipe">Create Recipe</a>
-  {{else}}
-    <a href="/login">Login</a>
-    <a href="/signupuser">Sign Up</a>
-  {{/if}}
-</nav>
+      <h1>Recipe Hub</h1>
+      {{#if user}}
+        <a href="/profile">Profile</a>
+        <a href="/signout">Sign Out</a>
+        <a href="/create-recipe">Create Recipe</a>
+      {{else}}
+        <a href="/login">Login</a>
+        <a href="/signupuser">Sign Up</a>
+      {{/if}}
+      <br><br>
+      <form action="/searchrecipe" method="POST">
+        <input type="text" name="searchQuery" placeholder="Search recipes..." required>
+        <select name="filter" id="filter">
+            <option value="all">All</option>
+            <option value="dietary">Dietary Restrictions</option>
+            <option value="cuisine">Cuisine</option>
+            <option value="ingredients">Ingredients</option>
+        </select>
+        <button type="submit">Search</button>
+      </form>
+    </nav>
   </header>
 
   <main>
