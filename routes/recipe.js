@@ -79,7 +79,7 @@ router.post('/:recipeId/review',ensureAuthenticated, async (req, res) => {
     }
 });
 
-router.post('/:recipeId/review/:reviewId/comment', async(req, res) => {
+router.post('/:recipeId/review/:reviewId/comment', ensureAuthenticated, async(req, res) => {
     let comment = req.body.commentText;
     const user = req.session.user;
     let recipeId = req.params.recipeId;

@@ -3,55 +3,58 @@
   <p hidden>{{ recipe._id }}</p>
   <p>Posted on {{formattedDate}}</p>
   <p>By: <a href="/profile/{{recipe.author}}">{{author}}</a></p>
-  <form id="save-review-form" method="POST" action="/recipe/{{recipe._id}}/save" name="save-review-form" type="button">
-    <button class="add-comment-button" name="add-comment-button" type="submit">Save Recipe</button>
+  {{#if user}}
+  <form id="save-recipe-form" method="POST" action="/recipe/{{recipe._id}}/save" name="save-recipe-form" type="button">
+    <button class="save-recipe-button" name="save-recipe-button" type="submit">Save Recipe</button>
   </form>
+  {{/if}}
   <h2>Ingredients</h2>
   <ul class="recipe_ingredients_list">
     {{#each recipe.ingredients}}
       <li>{{this}} {{@key}}</li>
     {{/each}}
   </ul>
-  <form id="shoppingList-form" class="shoppingList-form" action="/shopping-list/{{recipe._id}}" method="POST" >
-    <button type="submit" id="submitButton" name="submitButton">Add to Shopping List</button>
-  </form>
+  {{#if user}}
+    <form id="shoppingList-form" class="shoppingList-form" action="/shopping-list/{{recipe._id}}" method="POST" >
+      <button type="submit" id="submitButton" name="submitButton">Add to Shopping List</button>
+    </form>
+  {{/if}}
   <h2>Instructions</h2>
   <ol class="recipe_instructions_list">
     {{#each recipe.instructions}}
       <li>{{this}}</li>
     {{/each}}
   </ol>
-  {{#if user}}
-  {{/if}}
 </div>
-
-<div class="review_container">
-  <form id="add-review-form" name="add-review-form" method="POST" action="/recipe/{{recipe._id}}/review">
-    <div class="review_text_container">
-      <label for="reviewText">Review:</label>
-      <input type="text" id="reviewText" name="reviewText" placeholder="Leave a review..." required>
-      <br><br>
-      <div class="review_rating_container">
-        <label for="rating">Rating:</label>
-        <br>
-        <select id="rating" name="rating">
-          <option value="">Please choose a rating</option>
-          <option value="1">1</option>
-          <option value="2">2</option>
-          <option value="3">3</option>
-          <option value="4">4</option>
-          <option value="5">5</option>
-          <option value="6">6</option>
-          <option value="7">7</option>
-          <option value="8">8</option>
-          <option value="9">9</option>
-          <option value="10">10</option>
-        </select>
+{{#if user}}
+  <div class="review_container">
+    <form id="add-review-form" name="add-review-form" method="POST" action="/recipe/{{recipe._id}}/review">
+      <div class="review_text_container">
+        <label for="reviewText">Review:</label>
+        <input type="text" id="reviewText" name="reviewText" placeholder="Leave a review..." required>
+        <br><br>
+        <div class="review_rating_container">
+          <label for="rating">Rating:</label>
+          <br>
+          <select id="rating" name="rating">
+            <option value="">Please choose a rating</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+          </select>
+        </div>
       </div>
-    </div>
-    <button type="submit" id="submit-review-button" name="submit-review-button">Add Review</button>
-  </form>
-</div>
+      <button type="submit" id="submit-review-button" name="submit-review-button">Add Review</button>
+    </form>
+  </div>
+{{/if}}
 
 {{#if reviews}}
   <div class="recipe_reviews_container">
