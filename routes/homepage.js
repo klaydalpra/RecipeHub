@@ -1,14 +1,14 @@
 import { Router } from 'express';
 import { getTopRatedRecipes } from '../data/recipes.js';
+
 const router = Router();
 
 router.get('/', async (req, res) => {
-    //res.send('Hello, World! This is the homepage!');
-  try {
+    try {
         const topRatedRecipes = await getTopRatedRecipes();
         res.render('home', { 
             title: 'RecipeHub',
-            topRatedRecipes: topRatedRecipes || []
+            topRatedRecipes: topRatedRecipes || [] // Pass the formatted recipes to the template
         });
     } catch (error) {
         console.error('Error loading homepage:', error);

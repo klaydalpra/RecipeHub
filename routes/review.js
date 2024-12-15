@@ -20,4 +20,32 @@ router.get('/:reviewId', async (req, res) => {
     }
 });
 
+router.post('/:recipeId/review', async (req, res) => {
+    try {
+        const { reviewText, rating } = req.body;
+        const user = req.session.user;
+        const recipeId = req.params.recipeId;
+
+        if (!reviewText || !rating) {
+            throw new Error('Review text and rating are required.');
+        }
+
+        if(reviewText.trim().length < 5) {
+            throw new Error('Review text must be longer');
+        }
+
+        const parsedRating = parseInt(rating, 10);
+        if (isNaN(parsedRating) || parsedRating < 1 || parsedRating > 10) {
+            throw new Error('Rating must be between 1-10.');
+        }
+
+        await reviewData.addReview(recipeId, user.id, user.userId, reviewText, parsedRating);
+        res.redirect(`/recipe/${recipeId}`);
+    } catch (error) {
+        console.error(`Error adding review: ${error.message}`);
+        res.status(400).render('error', { error: error.message });
+    }
+});
+
+
 export default router;

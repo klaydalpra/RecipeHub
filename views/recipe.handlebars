@@ -1,6 +1,8 @@
 <div class="recipe_container">
   <h1>{{ recipe.name }}</h1>
   <p hidden>{{ recipe._id }}</p>
+  <p>Posted on {{formattedDate}}</p>
+  <p>By: {{author}}</p>
   <h2>Ingredients</h2>
     <ul class="recipe_ingredients_list">
       {{#each recipe.ingredients}}
