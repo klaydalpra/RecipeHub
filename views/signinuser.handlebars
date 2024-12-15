@@ -1,16 +1,22 @@
 {{!-- Sign In Page --}}
-<h1>Sign In</h1>
-<form id="signin-form" method="POST" action="/signinuser">
-    <label for="userId">User ID:</label>
-    <input type="text" id="userId" name="userId" required>
+<div class="sign-in-container">
+    <h1>Sign In</h1>
+    <form id="signin-form" method="POST" action="/signinuser">
+        <div class="sign-in-input-container">
+            <label for="userId">User ID:</label>
+            <input type="text" id="userId" name="userId" required>
+        </div>
+        <div class="sign-in-input-container">
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+        </div>
+        <button type="submit" id="submit_button" name="submit_button">Sign In</button>
+    </form>
     <br>
-    <label for="password">Password:</label>
-    <input type="password" id="password" name="password" required>
-    <br>
-    <button type="submit" id="submit_button" name="submit_button">Sign In</button>
-</form>
-<a href="/signupuser">Click here to sign up!</a>
+    <a href="/signupuser">Click here to sign up!</a>
 
-{{#if error}}
-<p class="error">{{error}}</p>
-{{/if}}
+    {{#if error}}
+    <p class="error">{{error}}</p>
+    {{/if}}
+</div>
+
