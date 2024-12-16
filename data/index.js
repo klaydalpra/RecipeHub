@@ -7,5 +7,4 @@ import * as reviewDataFunctions from './reviews.js';
 export const recipeData = recipeDataFunctions;
 export const userData = userDataFunctions;
 export const shoppingListData = shoppingListDataFunctions;
-
 export const reviewData = reviewDataFunctions;

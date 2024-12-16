@@ -51,9 +51,7 @@ export const signUpUser = async (firstName, lastName, email, userId, password) =
         throw new Error('Failed to create user.');
     }
 
-    return {
-        registrationCompleted: true
-    };
+    return insertResult.insertedId;
 };
 
 export const signInUser = async (userId, password) => {

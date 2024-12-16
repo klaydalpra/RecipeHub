@@ -115,7 +115,7 @@ const addReviewComment = async (comment, reviewId, userId) => {
         {returnDocument: 'after'}
     );
 
-    if (!updatedReview) throw new Error (`Could not update team with id of ${reviewId}`);
+    if (!updatedReview) throw new Error (`Could not update review with id of ${reviewId}`);
     
     return updatedReview;
 }

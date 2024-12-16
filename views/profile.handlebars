@@ -62,6 +62,7 @@
         </div>
     {{/if}}
 
+    {{#if user}}
     {{#unless isOwnProfile}}
         <div class="profile-container" id="profile-actions">
             {{#if isFollowing}}
@@ -75,6 +76,7 @@
             {{/if}}
         </div>
     {{/unless}}
+    {{/if}}
 </div>
 
 <script>
