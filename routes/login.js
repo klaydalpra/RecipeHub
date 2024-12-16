@@ -1,6 +1,7 @@
 import express from 'express';
 import { ensureGuest } from '../middleware/authMiddleware.js';
 import { userData } from '../data/index.js';
+import xss from 'xss';
 
 const router = express.Router();
 
@@ -10,7 +11,8 @@ router.get('/', ensureGuest, (req, res) => {
 
 router.post('/', async (req, res) => {
   try {
-    const { userId, password } = req.body;
+    const userId = xss(req.body.userId);
+    const password = xss(req.body.password);
     const authUser = await userData.signInUser(userId, password);
     req.session.user = authUser;
     res.redirect('/home');
