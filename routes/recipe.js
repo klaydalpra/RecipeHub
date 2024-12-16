@@ -4,6 +4,7 @@ import { reviewData } from '../data/index.js';
 import { userData } from '../data/index.js';
 import helperFunctions from '../helpers.js';
 import { ensureAuthenticated } from '../middleware/authMiddleware.js';
+import xss from 'xss';
 const router = Router();
 
 router.get('/:recipeId', async (req, res) => {
@@ -58,7 +59,8 @@ router.post('/:recipeId/save', ensureAuthenticated, async (req, res) => {
 });
 
 router.post('/:recipeId/review',ensureAuthenticated, async (req, res) => {
-    const { reviewText, rating } = req.body;
+    const reviewText = xss(req.body.reviewText);
+    const rating = xss(req.body.rating);
     const user = req.session.user;
     let recipeId = req.params.recipeId;
 
@@ -80,7 +82,7 @@ router.post('/:recipeId/review',ensureAuthenticated, async (req, res) => {
 });
 
 router.post('/:recipeId/review/:reviewId/comment', ensureAuthenticated, async(req, res) => {
-    let comment = req.body.commentText;
+    let comment = xss(req.body.commentText);
     const user = req.session.user;
     let recipeId = req.params.recipeId;
     let reviewId = req.params.reviewId;

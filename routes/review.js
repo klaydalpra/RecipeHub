@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { reviewData } from '../data/index.js';
 import helperFunctions from '../helpers.js';
+import xss from 'xss';
 
 const router = Router();
 
@@ -22,7 +23,8 @@ router.get('/:reviewId', async (req, res) => {
 
 router.post('/:recipeId/review', async (req, res) => {
     try {
-        const { reviewText, rating } = req.body;
+        const reviewText = xss(req.body.reviewText);
+        const rating = xss(req.body.rating);
         const user = req.session.user;
         const recipeId = req.params.recipeId;
 

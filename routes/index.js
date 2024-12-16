@@ -4,7 +4,6 @@ import createRecipeRoutes from './createRecipe.js';
 import recipeRoute from './recipe.js';
 import homeRoute from './homepage.js';
 import profileRoute from './profile.js';
-import favoriteRoute from './favorites.js';
 import shoppingRoute from './shoppingList.js';
 import searchRoute from './searchrecipe.js';
 import signUpRoute from './signupuser.js';
@@ -17,7 +16,6 @@ const constructorMethod = (app) => {
   app.use('/recipe', recipeRoute);
   app.use('/home', homeRoute);
   app.use('/profile', profileRoute);
-  app.use('/favorites', favoriteRoute);
   app.use('/shopping-list', shoppingRoute);
   app.use('/searchrecipe', searchRoute);
   app.use('/signupuser', signUpRoute);

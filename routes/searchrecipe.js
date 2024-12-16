@@ -1,9 +1,10 @@
 import {Router} from 'express';
 const router = Router();
 import {getAllRecipes} from '../data/recipes.js';
+import xss from 'xss';
 
 router.post('/', async (req, res) => {
-    const searchQuery1 = req.body.searchQuery?.trim();
+    const searchQuery1 = xss(req.body.searchQuery?.trim());
     const searchQuery = sanitizeSearchText(searchQuery1);
     const filter = req.body.filter || 'all';
 
